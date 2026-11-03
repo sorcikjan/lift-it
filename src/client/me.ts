@@ -28,5 +28,15 @@ export async function refreshMe(): Promise<Me | null> {
 }
 
 if (typeof window !== 'undefined') {
-  supabase()?.auth.onAuthStateChange(() => { void refreshMe(); });
+  supabase()?.auth.onAuthStateChange((event, session) => {
+    // Obnovovací token Googlu přijde jen hned po přihlášení: uložit ho šifrovaně na server (import sheetu).
+    if (event === 'SIGNED_IN' && (session?.provider_refresh_token || session?.provider_token)) {
+      void fetch('/api/google/token', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ refresh_token: session.provider_refresh_token, access_token: session.provider_token }),
+      }).catch(() => {});
+    }
+    void refreshMe();
+  });
 }
