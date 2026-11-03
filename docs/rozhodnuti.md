@@ -28,3 +28,10 @@ Když s něčím nesouhlasíš, napiš a změním to.
 | 21 | Grafy progresu | Grafy jsou na tmavším pozadí (#1C2024) a mají přepínač „Zobrazit jako tabulku“. Každý graf má jen jednu osu. | Modrá #2F6FE4 má na kartě #2A3036 kontrast jen 2,87:1; na #1C2024 projde. |
 | 22 | Změna síly v % | Počítá se z odhadu 1RM (Epley, jen série do 12 opakování); výchozí stav = první trénink cviku. „Celkově silnější“ = průměr změn přes cviky. | Srovná se i trénink s jinými opakováními. |
 | 23 | Sdílený odkaz | Odkaz platí bez omezení, dokud ho cvičenec nesmaže; ukazuje jen jeden trénink. | Nejjednodušší; trenér ho otevře kdykoli. |
+| 24 | Kotouče | Osa 20 kg, kotouče 25/20/15/10/5/2,5/1,25 kg, jen u cviků s vybavením „osa“. Nesložitelná váha = nic se neukáže. | Nejběžnější vybavení posilovny; žádné nastavení navíc. |
+| 25 | Historie (A8) | Starší týden se uloží jako odcvičený se sériemi přesně podle plánu; tréninky týdne se rozloží na po/st/pá. | Sheet obsahuje plán, ne skutečnost; jako výchozí stav to stačí. |
+| 26 | Zápis do sheetu (A9) | Jeden sloupec „Odcvičeno“ za posledním sloupcem s daty (existující se použije znovu), text „4 × 10, 45 kg“. Právo úprav (scope `spreadsheets`) se žádá až při prvním zápisu. | Trenérovi nic nepřepíše a přihlášení zůstává jen pro čtení, dokud zápis nechceš. |
+| 27 | Cvik navíc (B15) | Přidává se ve shrnutí, ne během tréninku. | Obrazovka tréninku zůstává podle Flow tréninku (jedna karta, bez dalších ovládacích prvků). |
+| 28 | Párování se Stravou | Překryv časů ± 10 min, vyhraje největší překryv, při shodě silový trénink. Do 2 h po tréninku „čekám na data“, pak „nenalezeno“. Appka zkouší sama při otevření shrnutí (každou minutu) a po startu appky / návratu signálu. | Garmin se do Stravy synchronizuje se zpožděním minut. |
+| 29 | Popis aktivity | Původní popis zůstane, náš blok „Odcvičeno v Lift It“ se přidá na konec a při dalším zápisu nahradí. Zapnuto, pokud Strava povolí zápis. | Nic nesmaže a nezdvojí se. |
+| 30 | Propojení Stravy bez cookie | Uživatel se do callbacku nese v šifrovaném `state` (platí 15 min). | Supabase drží přihlášení v prohlížeči, ne v cookie. |

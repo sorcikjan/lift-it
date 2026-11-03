@@ -22,7 +22,8 @@ Hodnoty ukládej do Vercelu (Settings → Environment Variables), **nikdy do git
 1. Na https://console.cloud.google.com založ projekt „Lift It“.
 2. **APIs & Services → Library:** zapni **Google Sheets API**.
 3. **OAuth consent screen:** typ *External*, název Lift It, tvůj e-mail.
-4. **Scopes:** přidej `openid`, `email`, `profile` a `https://www.googleapis.com/auth/spreadsheets.readonly` (jen čtení tabulek).
+4. **Scopes:** přidej `openid`, `email`, `profile`, `https://www.googleapis.com/auth/spreadsheets.readonly` (čtení tabulek)
+   a `https://www.googleapis.com/auth/spreadsheets` (jen pro zápis odcvičených hodnot do trenérova sheetu, A9; appka o něj požádá až při prvním zápisu).
 5. **Test users:** přidej svůj Google účet a účet trenéra. Appka zůstane v testovacím režimu, ověření Googlem není potřeba.
 6. **Credentials → Create credentials → OAuth client ID → Web application:**
    - Authorized JavaScript origins: `https://lift-it.vercel.app`, `http://localhost:3000`
@@ -45,7 +46,7 @@ Pozn.: v testovacím režimu Google platnost obnovovacího tokenu omezuje na 7 d
 ## 4. Strava (data z hodinek, fáze 3)
 
 1. Na https://www.strava.com/settings/api vytvoř aplikaci: název Lift It, kategorie Training,
-   **Authorization Callback Domain** = `lift-it.vercel.app` (bez https).
+   **Authorization Callback Domain** = `lift-it.vercel.app` (bez https). Appka se vrací na `/api/strava/callback`.
 2. `Client ID` → `STRAVA_CLIENT_ID`, `Client Secret` → `STRAVA_CLIENT_SECRET`.
 3. V appce: Účet → Propojit Stravu. Každý cvičenec si Stravu propojuje sám.
 

@@ -44,3 +44,23 @@
 **Co není hotové / jen mock**
 - Čtení skutečného Google sheetu: kód hotový, ověřený jen proti mocku a zaznamenaným odpovědím API. Potřebuju OAuth klienta (viz `docs/setup.md`).
 - Nasazení na Vercel stále čeká na účty.
+
+## Fáze 3: Doladění
+
+**Hotové**
+- A8: starší týdenní sheety jako historie (Účet → Starší týdny jako historie). Progres pak počítá od skutečného začátku.
+- A9: „Zapsat do trenérova sheetu“ ve shrnutí — do sloupce „Odcvičeno“ za daty zapíše „4 × 10, 45 kg“ na řádek každého cviku.
+  Nic jiného v sheetu nemění. Právo úprav si appka vyžádá až při prvním zápisu.
+- B14: superserie A1/A2 (bez pauzy mezi cviky dvojice, štítky na domově a na kartě). B15: cvik navíc mimo plán ve shrnutí.
+- D6: tělesná měření s grafem hmotnosti.
+- G1–G5: Strava — propojení v Účtu (tokeny šifrovaně, automatická obnova), po tréninku samo dohledá aktivitu z hodinek podle času,
+  ukáže tep a kalorie, zapíše série do popisu aktivity (jde vypnout), stav „čekám na data / spárováno / nenalezeno, zkusit znovu“, graf tepu v progresu.
+- Kotouče: na kartě Cvičím a Vydýchej se u cviků s osou, barevně podle soutěžních kotoučů.
+
+**Ověření**
+- Vitest: 206 testů zelených. Playwright 12/12 (nové: superserie + kotouče + Strava + zápis do sheetu, čekání na hodinky, historie + cvik navíc + měření).
+- Screenshoty: `docs/screenshots/faze-3/`.
+
+**Jen mock / neověřené**
+- Strava a zápis do sheetu běží proti mockům; skutečné API potřebují účty (souhrnný seznam na konci).
+- Kritérium „položky upravené podle zkušeností z prvních tréninků“ čeká na tvoje připomínky.

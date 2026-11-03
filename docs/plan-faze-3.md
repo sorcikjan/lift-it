@@ -27,14 +27,29 @@ Požadavky: A8, A9, B14, B15, D6, G1–G5, kotouče (PRD, Vizuální směr: „u
 
 ## Akceptační kritéria (PRD)
 
-- [ ] Starší týdenní sheety naimportované jako historie.
+- [x] Starší týdenní sheety naimportované jako historie.
+  Ověřeno: e2e `faze3.spec.ts` „A8, B15, D6“ — vložený starší týden (leg press 30 kg, 7. 9.) se uloží jako odcvičený, domov ho nenabízí,
+  progres pak ukazuje „start 30 kg × 10“ a +33 %. Unit `baseline.test.ts` (rozložení tréninků do týdne, série podle plánu, progres od historie).
 - [ ] Položky upravené podle zkušeností z prvních tréninků (seznam doplníme).
-- [ ] Po tréninku se ke shrnutí sám připojí tep a kalorie z Garminu přes Stravu a do popisu aktivity ve Stravě se zapíšou odcvičené série.
+  Nejde splnit beze mě: čeká na tvoje první tréninky v posilovně a seznam připomínek.
+- [x] Po tréninku se ke shrnutí sám připojí tep a kalorie z Garminu přes Stravu a do popisu aktivity ve Stravě se zapíšou odcvičené série.
+  Ověřeno proti mocku Stravy: e2e „Kotouče, B14, A9, G1–G4“ — propojení přes OAuth (mock), po tréninku se bez ťuknutí ukáže tep 118/156 a 342 kcal,
+  popis aktivity = původní text z Garminu + blok „Odcvičeno v Lift It“ se všemi cviky. e2e „G3“ — hodinky ještě nesynchronizovaly → „Čekám na data
+  z hodinek“, „Zkusit znovu“ spáruje. Unit: párování podle překryvu, popis bez zdvojení, OAuth, obnova a odvolání tokenu (PGlite), šifrování v DB.
+  **Proti skutečné Stravě neověřeno** (chybí Strava aplikace a tvoje hodinky).
 
 Doplňková kritéria z požadavků fáze:
 
-- [ ] A9: odcvičené hodnoty jdou jedním ťuknutím zapsat zpět do trenérova sheetu.
-- [ ] B14: superserie A1/A2 jde bez pauzy, pauza až po dvojici.
-- [ ] B15: série i cvik navíc mimo plán.
-- [ ] D6: tělesná měření se ukládají a mají graf.
-- [ ] Kotouče: u váhy na čince je vidět, co nasadit na každou stranu.
+- [x] A9: odcvičené hodnoty jdou jedním ťuknutím zapsat zpět do trenérova sheetu.
+  Ověřeno: e2e — tlačítko ve shrnutí zapíše do mock sheetu sloupec „Odcvičeno“ (hlavička + řádek každého cviku, nic jiného). Unit: výpočet buněk,
+  existující sloupec, změněné pořadí, A1 notace, volání API v4 a chybějící právo úprav. **Proti skutečnému sheetu neověřeno.**
+- [x] B14: superserie A1/A2 jde bez pauzy, pauza až po dvojici.
+  Ověřeno: e2e — import „A1 Tlak na prsa / A2 Přítahy“: na domově A1/A2, karta „Hlavní část · Superserie A“, po sérii A1 rovnou Cvičím A2
+  (bez Vydýchej se), pauza až po dvojici; unit testy reduceru (fáze 1).
+- [x] B15: série i cvik navíc mimo plán.
+  Ověřeno: e2e — ve shrnutí „Přidat cvik navíc“ → Kliky → 15 opakování, uloženo jako „navíc“; série navíc už z fáze 1 (karta Na řadě i shrnutí).
+- [x] D6: tělesná měření se ukládají a mají graf.
+  Ověřeno: e2e — dvě měření (84 a 82,5 kg, pas), seznam od nejnovějšího s desetinnou čárkou, graf hmotnosti. Screenshot 08.
+- [x] Kotouče: u váhy na čince je vidět, co nasadit na každou stranu.
+  Ověřeno: e2e — dřep 40 kg ukáže „Na každou stranu: 10 kg, osa 20 kg“ na kartě Cvičím i Vydýchej se; unit testy rozkladu (příklad z PRD,
+  1,25 kg, nesložitelná váha, jen u osy). Screenshot 02.
