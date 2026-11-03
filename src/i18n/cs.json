@@ -30,7 +30,10 @@
     "vydrz": "výdrž",
     "max": "max",
     "chyba": "Něco se nepovedlo. Zkus to znovu.",
-    "zadnaData": "Zatím tu nic není."
+    "zadnaData": "Zatím tu nic není.",
+    "nahoru": "Posunout nahoru",
+    "dolu": "Posunout dolů",
+    "odebrat": "Odebrat"
   },
   "blok": {
     "uvod": "Úvod",
@@ -96,7 +99,9 @@
     "jesteSerie": "Ještě jedna série navíc: {name}",
     "pridatCvik": "Přidat cvik mimo plán",
     "superserie": "Superserie {group}",
-    "superserieDalsi": "Hned potom: {name}"
+    "superserieDalsi": "Hned potom: {name}",
+    "hlavickaPrefix": "Trénink {label} · cvik ",
+    "hlavickaSuffix": " ze {total}"
   },
   "texty": {
     "start": "Převlečený? Tak jdeme na to!",
@@ -234,16 +239,37 @@
     "ulozenoAlias": "Spárováno. Příště to poznám sám."
   },
   "muscles": {
-    "abdominals": "břicho", "abductors": "abduktory", "adductors": "adduktory", "biceps": "biceps",
-    "calves": "lýtka", "chest": "prsa", "forearms": "předloktí", "glutes": "hýždě",
-    "hamstrings": "zadní stehna", "lats": "široký sval zádový", "lower back": "spodní záda",
-    "middle back": "střední záda", "neck": "krk", "quadriceps": "přední stehna", "shoulders": "ramena",
-    "traps": "trapézy", "triceps": "triceps"
+    "abdominals": "břicho",
+    "abductors": "abduktory",
+    "adductors": "adduktory",
+    "biceps": "biceps",
+    "calves": "lýtka",
+    "chest": "prsa",
+    "forearms": "předloktí",
+    "glutes": "hýždě",
+    "hamstrings": "zadní stehna",
+    "lats": "široký sval zádový",
+    "lower back": "spodní záda",
+    "middle back": "střední záda",
+    "neck": "krk",
+    "quadriceps": "přední stehna",
+    "shoulders": "ramena",
+    "traps": "trapézy",
+    "triceps": "triceps"
   },
   "equipment": {
-    "body only": "vlastní váha", "machine": "stroj", "other": "jiné", "foam roll": "válec",
-    "kettlebells": "kettlebell", "dumbbell": "jednoručky", "cable": "kladka", "barbell": "osa",
-    "bands": "gumy", "medicine ball": "medicinbal", "exercise ball": "gymball", "e-z curl bar": "EZ osa",
+    "body only": "vlastní váha",
+    "machine": "stroj",
+    "other": "jiné",
+    "foam roll": "válec",
+    "kettlebells": "kettlebell",
+    "dumbbell": "jednoručky",
+    "cable": "kladka",
+    "barbell": "osa",
+    "bands": "gumy",
+    "medicine ball": "medicinbal",
+    "exercise ball": "gymball",
+    "e-z curl bar": "EZ osa",
     "none": "bez vybavení"
   },
   "import": {
@@ -365,5 +391,18 @@
     "nadpis": "Na každou stranu",
     "osa": "osa {w} kg",
     "jenOsa": "jen osa"
+  },
+  "export": {
+    "datum": "datum",
+    "trenink": "trenink",
+    "cvik": "cvik",
+    "serie": "serie",
+    "opakovani": "opakovani",
+    "vaha_kg": "vaha_kg",
+    "cas_s": "cas_s",
+    "navic": "navic",
+    "s_trenerem": "s_trenerem",
+    "poznamka": "poznamka",
+    "soubor": "lift-it-serie-{date}.csv"
   }
 }
