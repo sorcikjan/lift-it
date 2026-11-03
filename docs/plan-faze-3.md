@@ -21,7 +21,7 @@ Požadavky: A8, A9, B14, B15, D6, G1–G5, kotouče (PRD, Vizuální směr: „u
 3. B14: štítek skupiny na kartách a v seznamu; e2e superserie (A1 → A2 bez pauzy).
 4. B15: přidání cviku navíc ve shrnutí.
 5. D6: měření (datum, hmotnost, obvody), seznam a graf hmotnosti.
-6. A9: zápis odcvičených hodnot zpět do sheetu: nový sloupec „Odcvičeno“ vedle sloupce cviku na stejném listu, text „45 × 10, 45 × 10“. Vyžaduje scope `spreadsheets` (úpravy); bez práva vrátí srozumitelnou chybu. Mock v testech.
+6. A9: zápis odcvičených hodnot zpět do sheetu: sloupec „Odcvičeno“ za posledním sloupcem s daty na stejném listu, text „4 × 10, 45 kg“. Vyžaduje scope `spreadsheets` (úpravy); bez práva vrátí srozumitelnou chybu. Mock v testech.
 7. G1–G5: OAuth Stravy (tokeny AES-GCM v `integration_tokens`, automatická obnova), párování podle časového překryvu (čistá funkce), stav ve shrnutí s „zkusit znovu“, zápis popisu (vypínatelný), tep a kalorie ve shrnutí a graf průměrného tepu v progresu. Mock Stravy (`INTEGRATIONS_MOCK=1`).
 8. Testy: unit (kotouče, baseline, writeback, Strava match/describe/api/token refresh), RLS beze změny, e2e (historie, superserie, cvik navíc, měření, Strava mock: propojit → trénink → spárováno, tep ve shrnutí, popis aktivity zapsaný).
 
