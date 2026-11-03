@@ -1,0 +1,17 @@
+node_modules
+.next
+out
+.cache
+.data
+.env
+.env.local
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+/test-results
+/playwright-report
+/playwright/.cache
+public/sw.js
+public/sw.js.map
+public/swe-worker-*.js
+.vercel
