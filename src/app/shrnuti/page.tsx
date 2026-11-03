@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/client/db';
 import { exerciseName } from '@/client/library';
-import { addExtraLoggedSet, saveNote, updateLoggedSet, updateSession } from '@/client/repo';
+import { addExtraExercise, addExtraLoggedSet, saveNote, updateLoggedSet, updateSession } from '@/client/repo';
 import { recordHistory, summarize } from '@/domain/progress';
 import { fmtKg, fmtNum, parseCzNumber, roundKg } from '@/domain/format';
 import { dayLabel } from '@/domain/dates';
@@ -13,6 +13,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { Check, Mic, Plus, Trophy } from '@/components/icons';
 import { LinkButton, Page, inputCls } from '@/components/ui';
 import { ShareButton } from '@/components/ShareButton';
+import { ExercisePicker } from '@/components/ExercisePicker';
 import { WatchPanel } from '@/components/WatchPanel';
 import { SyncBadge } from '@/components/SyncBadge';
 import { t } from '@/i18n/t';
@@ -42,6 +43,7 @@ function Summary() {
     return { session, sets: sets.filter((s) => !s.archived).sort((a, b) => (a.logged_at < b.logged_at ? -1 : 1)), workout, planned, exs, records, note: notes.find((n) => !n.exercise_id && !n.archived)?.text ?? '' };
   }, [id]);
   const [editing, setEditing] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
 
   if (data === undefined) return <Page><p className="pt-10 text-ocel">{t('common.nacitam')}</p></Page>;
   if (data === null) return <Page><p className="pt-10 text-ocel">{t('common.zadnaData')}</p><BottomNav /></Page>;
@@ -111,6 +113,16 @@ function Summary() {
             </li>
           ))}
         </ul>
+        {adding ? (
+          <div className="mt-3 rounded-[18px] bg-grafit p-3">
+            <p className="text-[15px] text-ocel">{t('summary.pridatCvikText')}</p>
+            <ExercisePicker onPick={async (eid) => { setEditing(await addExtraExercise(session.id, eid)); setAdding(false); }} />
+          </div>
+        ) : (
+          <button type="button" onClick={() => setAdding(true)} className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-2xl border border-linka text-[17px] font-semibold text-ocel">
+            <Plus size={20} />{t('summary.pridatCvik')}
+          </button>
+        )}
       </section>
 
       <NoteBox sessionId={session.id} initial={data.note} />

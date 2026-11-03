@@ -325,6 +325,18 @@ export async function addExtraLoggedSet(sessionId: string, base: LoggedSet) {
   } as unknown as Row]);
 }
 
+/** B15: cvik navíc mimo plán, přidaný ve shrnutí. Vrací id první série k doplnění. */
+export async function addExtraExercise(sessionId: string, exerciseId: string): Promise<string> {
+  const ex = await db().exercises.get(exerciseId);
+  const id = uuid();
+  await save('logged_sets', [{
+    id, session_id: sessionId, exercise_id: exerciseId, planned_set_id: null, planned_exercise_id: null, number: 1,
+    reps: null, weight_kg: null, time_s: ex?.type === 'time' ? 0 : null, rpe: null, skipped: false, extra: true, kind: 'working',
+    logged_at: nowIso(), archived: false,
+  } satisfies LoggedSet as unknown as Row]);
+  return id;
+}
+
 export async function updateSession(id: string, patch: Partial<Session>) {
   const s = await db().sessions.get(id);
   if (!s) return;
