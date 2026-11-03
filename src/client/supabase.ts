@@ -22,14 +22,16 @@ export async function authHeader(): Promise<Record<string, string>> {
 }
 
 export const SHEETS_SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+/** A9: zápis do trenérova sheetu potřebuje širší scope; žádá se až při prvním zápisu. */
+export const SHEETS_WRITE_SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
 
-export async function signInWithGoogle(next = '/') {
+export async function signInWithGoogle(next = '/', opts: { write?: boolean } = {}) {
   const s = supabase();
   if (!s) return;
   await s.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      scopes: SHEETS_SCOPE,
+      scopes: opts.write ? SHEETS_WRITE_SCOPE : SHEETS_SCOPE,
       redirectTo: `${location.origin}/ucet?next=${encodeURIComponent(next)}`,
       queryParams: { access_type: 'offline', prompt: 'consent' },
     },

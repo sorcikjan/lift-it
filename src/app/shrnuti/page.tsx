@@ -14,6 +14,7 @@ import { Check, Mic, Plus, Trophy } from '@/components/icons';
 import { LinkButton, Page, inputCls } from '@/components/ui';
 import { ShareButton } from '@/components/ShareButton';
 import { ExercisePicker } from '@/components/ExercisePicker';
+import { WritebackButton } from '@/components/WritebackButton';
 import { WatchPanel } from '@/components/WatchPanel';
 import { SyncBadge } from '@/components/SyncBadge';
 import { t } from '@/i18n/t';
@@ -134,6 +135,7 @@ function Summary() {
 
       <div className="mt-5 flex flex-col gap-3">
         <ShareButton sessionId={session.id} label={workout?.label ?? ''} />
+        <WritebackButton sessionId={session.id} />
         <LinkButton href="/" big variant="done"><Check size={28} />{t('common.hotovo')}</LinkButton>
       </div>
       <BottomNav />

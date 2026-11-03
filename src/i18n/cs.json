@@ -389,8 +389,29 @@
     "propojeno": "Strava je propojená",
     "odpojit": "Odpojit",
     "zapisPopisu": "Zapisovat odcvičené série do popisu aktivity",
-    "popisRadek": "{name} {sets} × {reps}, {w} kg",
-    "popisRadekBezVahy": "{name} {sets} × {reps}"
+    "popisNadpis": "Odcvičeno v Lift It",
+    "popisRadek": "{name} {sets}",
+    "pripojeno": "Spárováno s aktivitou ve Stravě",
+    "propojitText": "Tep a kalorie z hodinek Garmin se ke shrnutí připojí samy přes Stravu.",
+    "chybaPropojeni": "Stravu se nepodařilo propojit. Zkus to znovu.",
+    "otevritAktivitu": "Otevřít ve Stravě",
+    "zapsanoDoPopisu": "Série jsou v popisu aktivity"
+  },
+  "serie": {
+    "stejne": "{n} × {what}",
+    "stejneVaha": "{n} × {what}, {w} kg",
+    "jednaVaha": "{w} kg × {what}",
+    "cas": "{s} s"
+  },
+  "zapis": {
+    "tlacitko": "Zapsat do trenérova sheetu",
+    "hlavicka": "Odcvičeno",
+    "hotovo": "Zapsáno do sheetu, sloupec {col}",
+    "pravo": "Pro zápis potřebuju právo úprav sheetu. Přihlas se znovu a povol úpravy.",
+    "povolit": "Povolit úpravy sheetu",
+    "nenalezeno": "Sheet ani list jsem nenašel.",
+    "offline": "Zápis potřebuje signál. Zkus to, až budeš online.",
+    "chyba": "Zápis se nepovedl. Zkus to za chvíli."
   },
   "plates": {
     "nadpis": "Na každou stranu",

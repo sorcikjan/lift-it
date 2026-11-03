@@ -3,8 +3,9 @@ import { env } from '@/server/env';
 import { loadToken, storeToken } from '@/server/tokens';
 import { googleSheetsApi } from './api';
 import { csvExportSource } from './csv-export';
-import { mockSheets } from './mock';
-import type { SheetsSource } from './types';
+import { mockSheets, mockWriter } from './mock';
+import { googleSheetsWriter } from './write';
+import { SheetsError, type SheetsSource, type SheetsWriter } from './types';
 
 export * from './types';
 export { parseSheetUrl } from './url';
@@ -38,4 +39,12 @@ export async function sheetsSource(db: Db, uid: string, opts: { clientToken?: st
   if (env.mockIntegrations) return mockSheets();
   const token = await googleAccessToken(db, uid, opts.clientToken);
   return token ? googleSheetsApi(token) : csvExportSource(fetch, opts.gid ?? null);
+}
+
+/** Zápis potřebuje token s právem úprav; bez tokenu nejde (CSV export je jen pro čtení). */
+export async function sheetsWriter(db: Db, uid: string, opts: { clientToken?: string | null }): Promise<SheetsWriter> {
+  if (env.mockIntegrations) return mockWriter();
+  const token = await googleAccessToken(db, uid, opts.clientToken);
+  if (!token) throw new SheetsError('google_login');
+  return googleSheetsWriter(token);
 }

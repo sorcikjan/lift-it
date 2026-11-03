@@ -6,8 +6,15 @@ export interface SheetsSource {
   readTab(spreadsheetId: string, tab: SheetTab): Promise<string[][]>;
 }
 
+export interface CellWrite { row: number; col: number; value: string }
+
+/** A9: zápis do trenérova sheetu. Potřebuje právo úprav (scope spreadsheets). */
+export interface SheetsWriter {
+  writeCells(spreadsheetId: string, tab: SheetTab, cells: CellWrite[]): Promise<void>;
+}
+
 export class SheetsError extends Error {
-  constructor(public code: 'google_login' | 'not_found' | 'forbidden' | 'bad_url' | 'unavailable', message?: string) {
+  constructor(public code: 'google_login' | 'not_found' | 'forbidden' | 'bad_url' | 'unavailable' | 'read_only', message?: string) {
     super(message ?? code);
   }
 }

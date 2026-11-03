@@ -63,3 +63,22 @@ describe('Šifrování tokenů', () => {
     expect(a).not.toContain('r"');
   });
 });
+
+describe('A9: zápis do sheetu přes API v4', () => {
+  it('pošle buňky v A1 notaci jako RAW', async () => {
+    const { googleSheetsWriter } = await import('./write');
+    const fetchMock = vi.fn(async () => new Response('{}'));
+    await googleSheetsWriter('tok', fetchMock as unknown as typeof fetch).writeCells('abc', { title: "Týden '46", gid: 1 }, [{ row: 0, col: 7, value: 'Odcvičeno' }, { row: 3, col: 7, value: '4 × 10, 45 kg' }]);
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toContain('/abc/values:batchUpdate');
+    expect(JSON.parse(String(init.body))).toEqual({
+      valueInputOption: 'RAW',
+      data: [{ range: "'Týden ''46'!H1", values: [['Odcvičeno']] }, { range: "'Týden ''46'!H4", values: [['4 × 10, 45 kg']] }],
+    });
+  });
+  it('bez práva úprav = read_only', async () => {
+    const { googleSheetsWriter } = await import('./write');
+    const w = googleSheetsWriter('tok', (async () => new Response('', { status: 403 })) as unknown as typeof fetch);
+    await expect(w.writeCells('abc', { title: 'A', gid: 0 }, [{ row: 0, col: 0, value: 'x' }])).rejects.toMatchObject({ code: 'read_only' });
+  });
+});
