@@ -414,4 +414,4 @@ Další fáze začíná až po splnění brány předchozí; fáze 4 jen tehdy, 
 - [ ] Trenér vytvoří týden kopírováním minulého rychleji než v Google Sheets.
 - [ ] Trenér vidí tvoje odcvičené hodnoty a může je okomentovat.
 
-**Jak to předat Claude Code:** předávací balíček (CLAUDE.md, docs/PRD.md, docs/prototype, fixtures/) rozbalit do prázdné složky projektu, do fixtures/ přidat 2–3 skutečné týdenní sheety jako CSV a v té složce spustit Claude Code se zadáním „Postav fázi 1“. Při změně PRD stačí nahradit docs/PRD.md novým exportem.
+**Jak to předat Claude Code:** repozitář github.com/sorcikjan/lift-it obsahuje CLAUDE.md, docs/PRD.md, docs/prototype a fixtures/. Stačí ho otevřít v Claude Code, do fixtures/ přidat 2–3 skutečné týdenní sheety jako CSV a zadat „Přečti CLAUDE.md a postav fázi 1“. Při změně PRD stačí nahradit docs/PRD.md novým exportem.
