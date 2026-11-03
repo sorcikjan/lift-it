@@ -116,7 +116,8 @@ export function startSync() {
   onLocalWrite(soon);
   window.addEventListener('online', () => { emit({ online: true }); void flush().then(() => pull()); });
   window.addEventListener('offline', () => emit({ online: false }));
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void flush(); });
+  // Návrat do appky (třeba z upozornění na nový plán): odeslat a stáhnout novinky od trenéra
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void flush().then(() => pull()); });
   setInterval(() => void flush(), 20000);
   emit({ online: navigator.onLine });
   void refreshPending();

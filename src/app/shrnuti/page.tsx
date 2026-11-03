@@ -1,5 +1,5 @@
 'use client';
-import { Suspense, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/client/db';
@@ -15,6 +15,9 @@ import { LinkButton, Page, inputCls } from '@/components/ui';
 import { ShareButton } from '@/components/ShareButton';
 import { ExercisePicker } from '@/components/ExercisePicker';
 import { WritebackButton } from '@/components/WritebackButton';
+import { CommentThread } from '@/components/CommentThread';
+import { comments as loadComments, people, type CommentView } from '@/client/coach';
+import { onMe, type Me } from '@/client/me';
 import { WatchPanel } from '@/components/WatchPanel';
 import { SyncBadge } from '@/components/SyncBadge';
 import { t } from '@/i18n/t';
@@ -45,6 +48,17 @@ function Summary() {
   }, [id]);
   const [editing, setEditing] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+  // E5: komentáře od trenéra (jen online a jen když nějakého trenéra mám nebo už komentáře jsou)
+  const [me, setMe] = useState<Me | null>(null);
+  const [all, setAll] = useState<CommentView[]>([]);
+  const [hasCoach, setHasCoach] = useState(false);
+  useEffect(() => { const off = onMe((m) => setMe(m)); return () => { off(); }; }, []);
+  const reloadComments = useCallback(() => { loadComments().then((c) => setAll(c.comments)).catch(() => {}); }, []);
+  useEffect(() => {
+    if (!me) return;
+    reloadComments();
+    people().then((p) => setHasCoach(p.coaches.length > 0)).catch(() => {});
+  }, [me, reloadComments]);
 
   if (data === undefined) return <Page><p className="pt-10 text-ocel">{t('common.nacitam')}</p></Page>;
   if (data === null) return <Page><p className="pt-10 text-ocel">{t('common.zadnaData')}</p><BottomNav /></Page>;
@@ -111,6 +125,9 @@ function Summary() {
                   className="tap flex items-center justify-center rounded-xl border border-linka px-3 text-ocel"><Plus size={20} /></button>
               </div>
               {g.sets.filter((s) => s.id === editing).map((s) => <SetEditor key={s.id} s={s} onDone={() => setEditing(null)} />)}
+              {me && (hasCoach || all.length > 0) && (
+                <CommentThread clientId={me.id} targetType="logged_set" targetId={g.sets[0].id} match={g.sets.map((x) => x.id)} all={all} onAdded={reloadComments} label={name(g.exerciseId)} />
+              )}
             </li>
           ))}
         </ul>
@@ -125,6 +142,13 @@ function Summary() {
           </button>
         )}
       </section>
+
+      {me && (hasCoach || all.some((c) => c.target_id === session.id)) && (
+        <section className="mt-5">
+          <h2 className="font-display text-[26px] font-bold">{t('coach.komentare')}</h2>
+          <CommentThread clientId={me.id} targetType="session" targetId={session.id} all={all} onAdded={reloadComments} />
+        </section>
+      )}
 
       <NoteBox sessionId={session.id} initial={data.note} />
 

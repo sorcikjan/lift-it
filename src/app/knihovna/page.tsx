@@ -21,7 +21,7 @@ export default function LibraryPage() {
   const all = useLiveQuery(() => (ready ? db().exercises.toArray() : Promise.resolve([] as Exercise[])), [ready]);
   const aliases = useLiveQuery(() => db().exercise_aliases.toArray(), []);
 
-  const list = useMemo(() => {
+  const found = useMemo(() => {
     if (!all) return [];
     const n = normalizeName(q);
     const aliasHit = new Set((aliases ?? []).filter((a) => n && a.text.includes(n)).map((a) => a.exercise_id));
@@ -29,9 +29,10 @@ export default function LibraryPage() {
       .filter((e) => !muscle || e.muscles.includes(muscle))
       .filter((e) => !equip || (e.equipment ?? 'none') === equip)
       .filter((e) => !n || normalizeName(e.name_cs).includes(n) || normalizeName(e.name_en).includes(n) || aliasHit.has(e.id))
-      .sort((a, b) => Number(!!b.owner_id) - Number(!!a.owner_id) || Number(!!b.name_cs) - Number(!!a.name_cs) || exerciseName(a).localeCompare(exerciseName(b), 'cs'))
-      .slice(0, 120);
+      .sort((a, b) => Number(!!b.owner_id) - Number(!!a.owner_id) || Number(!!b.name_cs) - Number(!!a.name_cs) || exerciseName(a).localeCompare(exerciseName(b), 'cs'));
   }, [all, aliases, q, muscle, equip]);
+  // Počet ukazuje všechny nalezené, vykreslí se prvních 120 (zbytek zúží hledání nebo filtr)
+  const list = useMemo(() => found.slice(0, 120), [found]);
 
   const muscles = useMemo(() => [...new Set((all ?? []).flatMap((e) => e.muscles))].sort(), [all]);
   const equipment = useMemo(() => [...new Set((all ?? []).map((e) => e.equipment ?? 'none'))].sort(), [all]);
@@ -53,7 +54,7 @@ export default function LibraryPage() {
           {equipment.map((m) => <option key={m} value={m}>{tMaybe(`equipment.${m}`, m)}</option>)}
         </select>
       </div>
-      <p className="mt-3 text-[14px] text-ocel">{t('library.vysledky', { n: list.length, cviku: cviku(list.length) })}</p>
+      <p className="mt-3 text-[14px] text-ocel">{t('library.vysledky', { n: found.length, cviku: cviku(found.length) })}</p>
       <ul className="mt-1 flex flex-col">
         {list.map((e) => (
           <li key={e.id}>

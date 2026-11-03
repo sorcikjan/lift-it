@@ -17,6 +17,11 @@ export default function AccountPage() {
   const [mode, setMode] = useState<AuthMode>('none');
   useEffect(() => { const off = onMe((m, md) => { setMe(m); setMode(md); }); return () => { off(); }; }, []);
   useEffect(() => { void refreshMe(); }, []);
+  // Po přihlášení Googlem zpět tam, odkud uživatel přišel (třeba pozvánka od trenéra)
+  useEffect(() => {
+    const next = new URLSearchParams(location.search).get('next');
+    if (me && next && next.startsWith('/') && !next.startsWith('//') && next !== '/ucet') location.replace(next);
+  }, [me]);
 
   const logout = async () => {
     await flush();
