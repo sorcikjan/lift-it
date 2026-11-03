@@ -33,7 +33,9 @@
     "zadnaData": "Zatím tu nic není.",
     "nahoru": "Posunout nahoru",
     "dolu": "Posunout dolů",
-    "odebrat": "Odebrat"
+    "odebrat": "Odebrat",
+    "bpm": "tep/min",
+    "krat": "×"
   },
   "blok": {
     "uvod": "Úvod",

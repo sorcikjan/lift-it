@@ -68,7 +68,7 @@ export default function Home() {
           <p className="text-[15px] text-ocel">{t('home.tentoTyden')}</p>
           <p className="font-display text-[24px] font-bold tabular">{t('home.tydenStav', { done: week.doneCount, total })}</p>
         </div>
-        <div role="img" aria-label={t('home.tydenAria', { done: week.doneCount, total })} className="flex gap-2">
+        <div role="group" aria-label={t('home.tydenAria', { done: week.doneCount, total })} className="flex gap-2">
           {week.workouts.map((w) => (
             <button key={w.workout.id} type="button" onClick={() => setPicked(w.workout.id)} aria-pressed={view.workoutId === w.workout.id}
               className={`tap flex items-center justify-center rounded-2xl font-display text-[22px] font-bold ${w.done ? 'bg-splneno text-guma' : view.workoutId === w.workout.id ? 'bg-krida text-guma' : 'border-2 border-linka text-ocel'}`}>
