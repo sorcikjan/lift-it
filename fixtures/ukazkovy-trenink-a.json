@@ -1,0 +1,13 @@
+{
+  "nazev": "Trénink A",
+  "poznamka": "Ukázková data z prototypu. Rozdělení na bloky je odhad; skutečné dá trenérův plán.",
+  "cviky": [
+    { "poradi": 1, "blok": "uvod", "nazev": "Tlak na prsa", "typ": "weight_reps", "serie": 3, "opakovani": 8, "vaha_kg": 35 },
+    { "poradi": 2, "blok": "uvod", "nazev": "Přítahy horní kladky", "typ": "weight_reps", "serie": 3, "opakovani": 10, "vaha_kg": 35 },
+    { "poradi": 3, "blok": "hlavni", "nazev": "Leg press", "typ": "weight_reps", "serie": 4, "opakovani": 10, "vaha_kg": 40 },
+    { "poradi": 4, "blok": "hlavni", "nazev": "Veslování na kladce", "typ": "weight_reps", "serie": 3, "opakovani": 12, "vaha_kg": 30 },
+    { "poradi": 5, "blok": "hlavni", "nazev": "Tlaky na ramena s jednoručkami", "typ": "weight_reps", "serie": 3, "opakovani": 10, "vaha_kg": 8 },
+    { "poradi": 6, "blok": "hlavni", "nazev": "Zakopávání", "typ": "weight_reps", "serie": 3, "opakovani": 12, "vaha_kg": 20 },
+    { "poradi": 7, "blok": "zaver", "nazev": "Plank", "typ": "time", "serie": 3, "cas_s": 30 }
+  ]
+}

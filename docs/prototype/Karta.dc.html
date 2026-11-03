@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>Trénink</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&amp;family=Barlow:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; padding: 44px 0 16px; display: flex; flex-direction: column; background: #1C2024; color: #F2F4F1; font-family: 'Barlow', system-ui, sans-serif; overflow: hidden">
+
+<div style="flex: none; height: 56px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<p style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; color: #9AA3AB">Trénink A · cvik <span style="color: #F2F4F1">{{cvikNo}}</span> ze 7</p>
+<a href="Shrnuti.dc.html" style="height: 56px; padding: 0 16px; box-sizing: border-box; display: flex; align-items: center; border-radius: 12px; border: 1px solid #3A4148; color: #9AA3AB; font: 500 16px 'Barlow', sans-serif; text-decoration: none">Ukončit</a>
+</div>
+
+<div style="flex: none; height: 44px; padding: 0 16px; display: flex; align-items: center">
+<sc-if value="{{hasToast}}" hint-placeholder-val="{{false}}">
+<span role="status" style="height: 40px; padding: 0 16px 0 8px; display: flex; align-items: center; gap: 10px; border-radius: 20px; background: #3FAF6B; color: #1C2024; font-size: 17px; font-weight: 700"><span style="width: 26px; height: 26px; border-radius: 50%; background: #1C2024; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3FAF6B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>{{toast}}</span>
+</sc-if>
+</div>
+
+<sc-if value="{{next}}" hint-placeholder-val="{{true}}">
+<div aria-label="Na řadě. Švihni do strany pro jiný cvik." style="flex: 1; min-height: 0; margin-top: 4px; padding-left: 16px; display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory">
+<sc-for list="{{cards}}" as="c" hint-placeholder-count="2">
+<div style="flex: none; width: 326px; box-sizing: border-box; padding: 18px; border-radius: 28px; background: #F2F4F1; color: #1C2024; display: flex; flex-direction: column; scroll-snap-align: start">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<span style="height: 30px; padding: 0 12px; display: flex; align-items: center; border-radius: 15px; font: 700 17px 'Barlow Condensed', sans-serif; {{c.tagStyle}}">{{c.tag}}</span>
+<span style="font: 600 17px 'Barlow Condensed', sans-serif; color: #5A636B">{{c.blockLabel}}</span>
+</div>
+<h1 style="margin: 16px 0 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; line-height: 1; {{c.nameStyle}}">{{c.name}}</h1>
+<div style="margin-top: 16px; height: 150px; box-sizing: border-box; padding: 12px; border-radius: 18px; background: #1C2024">
+<sc-if value="{{c.imgLeg}}" hint-placeholder-val="{{false}}">
+<svg viewBox="0 0 320 84" style="width: 100%; height: 108px; display: block" role="img" aria-label="Leg press: z pokrčených kolen do propnutých nohou" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<g>
+<line x1="4" y1="82" x2="156" y2="82" stroke="#4A535C" stroke-width="2"></line>
+<line x1="64" y1="73" x2="140" y2="16" stroke="#6B747C" stroke-width="3"></line>
+<line x1="6" y1="40" x2="28" y2="70" stroke="#4A535C" stroke-width="7"></line>
+<line x1="28" y1="72" x2="52" y2="72" stroke="#4A535C" stroke-width="7"></line>
+<line x1="77.6" y1="62.8" x2="90.4" y2="53.2" stroke="#9AA3AB" stroke-width="6"></line>
+<line x1="66" y1="34" x2="78" y2="50" stroke="#9AA3AB" stroke-width="5"></line>
+<circle cx="9" cy="34" r="6" stroke="#F2F4F1" stroke-width="3"></circle>
+<polyline points="14,44 40,66" stroke="#F2F4F1" stroke-width="3"></polyline>
+<polyline points="40,66 42.6,36.1 72,42" stroke="#F2F4F1" stroke-width="3"></polyline>
+</g>
+<g transform="translate(164 0)">
+<line x1="4" y1="82" x2="156" y2="82" stroke="#4A535C" stroke-width="2"></line>
+<line x1="64" y1="73" x2="140" y2="16" stroke="#6B747C" stroke-width="3"></line>
+<line x1="6" y1="40" x2="28" y2="70" stroke="#4A535C" stroke-width="7"></line>
+<line x1="28" y1="72" x2="52" y2="72" stroke="#4A535C" stroke-width="7"></line>
+<line x1="92" y1="52" x2="104.8" y2="42.4" stroke="#9AA3AB" stroke-width="6"></line>
+<line x1="80.4" y1="23.2" x2="92.4" y2="39.2" stroke="#9AA3AB" stroke-width="5"></line>
+<circle cx="9" cy="34" r="6" stroke="#F2F4F1" stroke-width="3"></circle>
+<polyline points="14,44 40,66" stroke="#F2F4F1" stroke-width="3"></polyline>
+<polyline points="40,66 58.6,42.4 86.4,31.2" stroke="#F2F4F1" stroke-width="3"></polyline>
+</g>
+</svg>
+</sc-if>
+<sc-if value="{{c.imgRow}}" hint-placeholder-val="{{false}}">
+<svg viewBox="0 0 320 84" style="width: 100%; height: 108px; display: block" role="img" aria-label="Veslování na kladce: z natažených paží k madlu u břicha" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<g>
+<line x1="4" y1="82" x2="156" y2="82" stroke="#4A535C" stroke-width="2"></line>
+<line x1="30" y1="72" x2="58" y2="72" stroke="#4A535C" stroke-width="7"></line>
+<line x1="108" y1="58" x2="112" y2="80" stroke="#9AA3AB" stroke-width="5"></line>
+<line x1="146" y1="30" x2="146" y2="82" stroke="#6B747C" stroke-width="3"></line>
+<line x1="100" y1="48" x2="146" y2="50" stroke="#6B747C" stroke-width="1.5"></line>
+<circle cx="62" cy="27" r="6" stroke="#F2F4F1" stroke-width="3"></circle>
+<polyline points="48,66 58,36" stroke="#F2F4F1" stroke-width="3"></polyline>
+<polyline points="58,37 100,48" stroke="#F2F4F1" stroke-width="3"></polyline>
+<polyline points="48,66 78,50 106,68" stroke="#F2F4F1" stroke-width="3"></polyline>
+</g>
+<g transform="translate(164 0)">
+<line x1="4" y1="82" x2="156" y2="82" stroke="#4A535C" stroke-width="2"></line>
+<line x1="30" y1="72" x2="58" y2="72" stroke="#4A535C" stroke-width="7"></line>
+<line x1="108" y1="58" x2="112" y2="80" stroke="#9AA3AB" stroke-width="5"></line>
+<line x1="146" y1="30" x2="146" y2="82" stroke="#6B747C" stroke-width="3"></line>
+<line x1="58" y1="54" x2="146" y2="50" stroke="#6B747C" stroke-width="1.5"></line>
+<circle cx="42" cy="27" r="6" stroke="#F2F4F1" stroke-width="3"></circle>
+<polyline points="48,66 44,36" stroke="#F2F4F1" stroke-width="3"></polyline>
+<polyline points="44,37 26,50 58,54" stroke="#F2F4F1" stroke-width="3"></polyline>
+<polyline points="48,66 78,50 106,68" stroke="#F2F4F1" stroke-width="3"></polyline>
+</g>
+</svg>
+</sc-if>
+<sc-if value="{{c.imgNone}}" hint-placeholder-val="{{true}}">
+<div style="height: 108px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #9AA3AB">[obrázek cviku]</div>
+</sc-if>
+<p style="margin: 4px 0 0; display: flex; justify-content: space-between; font-size: 13px; color: #9AA3AB"><span>Začátek</span><span>Konec</span></p>
+</div>
+<p style="margin: 16px 0 0; font: 700 30px 'Barlow Condensed', sans-serif; font-variant-numeric: tabular-nums">{{c.plan}}</p>
+<p style="margin: 10px 0 0; font-size: 16px; line-height: 1.35; color: #3A4148">{{c.hint}}</p>
+<button type="button" onClick="{{c.go}}" style="margin-top: auto; width: 100%; height: 84px; display: flex; align-items: center; justify-content: center; gap: 12px; border: 0; border-radius: 20px; background: #2F6FE4; color: #F2F4F1; font: 700 32px 'Barlow Condensed', sans-serif; cursor: pointer"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"></path></svg>Jdu na to</button>
+</div>
+</sc-for>
+<div style="flex: none; width: 6px"></div>
+</div>
+</sc-if>
+
+<sc-if value="{{work}}" hint-placeholder-val="{{false}}">
+<div style="flex: 1; min-height: 0; margin: 4px 16px 0; box-sizing: border-box; padding: 18px; border-radius: 28px; background: #1F55C8; color: #F2F4F1; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<span style="height: 30px; padding: 0 12px; display: flex; align-items: center; border-radius: 15px; background: rgba(242, 244, 241, 0.18); font: 700 17px 'Barlow Condensed', sans-serif">Cvičím</span>
+<span role="img" aria-label="{{dotsLabel}}" style="display: flex; gap: 8px">
+<sc-for list="{{dots}}" as="d" hint-placeholder-count="4">
+<sc-if value="{{d.isDone}}" hint-placeholder-val="{{false}}"><span style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; background: #3FAF6B; border: 2px solid #F2F4F1; display: flex; align-items: center; justify-content: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1C2024" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span></sc-if>
+<sc-if value="{{d.isCur}}" hint-placeholder-val="{{false}}"><span style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 3px solid #F2F4F1"></span></sc-if>
+<sc-if value="{{d.isTodo}}" hint-placeholder-val="{{true}}"><span style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 2px solid #7FA2E8"></span></sc-if>
+</sc-for>
+</span>
+</div>
+<p style="margin: 16px 0 0; font: 600 24px 'Barlow Condensed', sans-serif; color: #D6E2FA">{{e.name}}</p>
+<p style="margin: 2px 0 0; font: 700 34px 'Barlow Condensed', sans-serif; font-variant-numeric: tabular-nums">Série {{setNo}} ze {{e.sets}}</p>
+<p aria-label="{{targetAria}}" style="margin: 14px 0 0; display: flex; align-items: baseline; gap: 6px; font-family: 'Barlow Condensed', sans-serif; font-variant-numeric: tabular-nums; line-height: 0.85; white-space: nowrap">
+<span style="font-size: 200px; font-weight: 700; letter-spacing: -4px">{{big}}</span>
+<span style="font-size: 64px; font-weight: 600; color: #D6E2FA">{{bigUnit}}</span>
+</p>
+<p style="margin: 10px 0 0; font: 700 32px 'Barlow Condensed', sans-serif; font-variant-numeric: tabular-nums">{{weightLine}}</p>
+<p style="margin: 16px 0 0; font-size: 19px; font-weight: 500">{{cheer}}</p>
+<sc-if value="{{final}}" hint-placeholder-val="{{false}}">
+<a href="Shrnuti.dc.html" style="margin-top: auto; height: 84px; display: flex; align-items: center; justify-content: center; gap: 12px; border-radius: 20px; background: #3FAF6B; color: #1C2024; font: 700 32px 'Barlow Condensed', sans-serif; text-decoration: none"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>{{ctaLabel}}</a>
+</sc-if>
+<sc-if value="{{notFinal}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{logSet}}" style="margin-top: auto; width: 100%; height: 84px; display: flex; align-items: center; justify-content: center; gap: 12px; border: 0; border-radius: 20px; background: #3FAF6B; color: #1C2024; font: 700 32px 'Barlow Condensed', sans-serif; cursor: pointer"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>{{ctaLabel}}</button>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{rest}}" hint-placeholder-val="{{false}}">
+<div style="flex: 1; min-height: 0; margin: 4px 16px 0; box-sizing: border-box; padding: 18px; border-radius: 28px; background: #E3B23C; color: #1C2024; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<span style="height: 30px; padding: 0 12px; display: flex; align-items: center; border-radius: 15px; background: #1C2024; color: #E3B23C; font: 700 17px 'Barlow Condensed', sans-serif">Vydýchej se</span>
+<span role="img" aria-label="{{dotsLabel}}" style="display: flex; gap: 8px">
+<sc-for list="{{dots}}" as="d" hint-placeholder-count="4">
+<sc-if value="{{d.isDone}}" hint-placeholder-val="{{false}}"><span style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; background: #3FAF6B; border: 2px solid #1C2024; display: flex; align-items: center; justify-content: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1C2024" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span></sc-if>
+<sc-if value="{{d.isCur}}" hint-placeholder-val="{{false}}"><span style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 2px dashed #1C2024"></span></sc-if>
+<sc-if value="{{d.isTodo}}" hint-placeholder-val="{{true}}"><span style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 2px solid #8C6A1C"></span></sc-if>
+</sc-for>
+</span>
+</div>
+<p style="margin: 16px 0 0; font: 600 24px 'Barlow Condensed', sans-serif; color: #3B2E0C">{{e.name}}</p>
+<div style="margin-top: 10px; display: flex; align-items: center; gap: 14px"><span style="flex: none; width: 64px; height: 64px; box-sizing: border-box; border-radius: 50%; background: #3FAF6B; border: 3px solid #1C2024; display: flex; align-items: center; justify-content: center"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1C2024" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><h1 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 52px; font-weight: 700; line-height: 0.95">{{restTitle}}</h1></div>
+<p style="margin: 14px 0 0; font-size: 20px; font-weight: 500; line-height: 1.35; color: #2A2209">{{restLine}}</p>
+<div style="margin-top: 28px; padding: 16px; border-radius: 18px; background: rgba(28, 32, 36, 0.1)">
+<p style="margin: 0; font-size: 15px; font-weight: 600; color: #3B2E0C">Další série {{setNo}} ze {{e.sets}}</p>
+<p style="margin: 4px 0 0; font: 700 40px 'Barlow Condensed', sans-serif; font-variant-numeric: tabular-nums">{{nextSet}}</p>
+</div>
+<button type="button" onClick="{{startSet}}" style="margin-top: auto; width: 100%; height: 84px; display: flex; align-items: center; justify-content: center; gap: 12px; border: 0; border-radius: 20px; background: #1C2024; color: #F2F4F1; font: 700 32px 'Barlow Condensed', sans-serif; cursor: pointer"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"></path></svg>Jdu na další sérii</button>
+</div>
+</sc-if>
+
+<div style="flex: none; height: 56px; margin-top: 12px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<p style="margin: 0; min-width: 0; font-size: 16px; color: #9AA3AB; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{thenText}}</p>
+<span role="img" aria-label="Hotovo {{doneCount}} ze 7 cviků" style="flex: none; display: flex; gap: 4px">
+<sc-for list="{{progress}}" as="p" hint-placeholder-count="7">
+<span style="width: 8px; height: 8px; border-radius: 4px; {{p.style}}"></span>
+</sc-for>
+</span>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["start","narade","cvicim","pauza","posledni","dalsi","odlozeno"],"default":"start"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  ex() {
+    if (!this._ex) {
+      this._ex = {
+        tlak: { n: 1, block: 'uvod', name: 'Tlak na prsa', sets: 3, reps: 8, w: 35 },
+        pritahy: { n: 2, block: 'uvod', name: 'Přítahy horní kladky', sets: 3, reps: 10, w: 35 },
+        leg: { n: 3, block: 'hlavni', name: 'Leg press', sets: 4, reps: 10, w: 40, img: 'leg' },
+        vesl: { n: 4, block: 'hlavni', name: 'Veslování na kladce', sets: 3, reps: 12, w: 30, img: 'row' },
+        ramena: { n: 5, block: 'hlavni', name: 'Tlaky na ramena s jednoručkami', sets: 3, reps: 10, w: 8 },
+        zak: { n: 6, block: 'hlavni', name: 'Zakopávání', sets: 3, reps: 12, w: 20 },
+        plank: { n: 7, block: 'zaver', name: 'Plank', sets: 3, reps: 30, w: 0, time: true }
+      };
+    }
+    return this._ex;
+  }
+  init() {
+    var v = this.props.variant || 'start';
+    var all = ['tlak', 'pritahy', 'leg', 'vesl', 'ramena', 'zak', 'plank'];
+    var s = { order: all.slice(2), deferred: [], done: { tlak: 3, pritahy: 3 }, phase: 'next', lastDone: 'pritahy' };
+    if (v === 'start') { s.order = all; s.done = {}; s.lastDone = ''; }
+    if (v === 'cvicim') { s.phase = 'work'; s.done.leg = 1; }
+    if (v === 'pauza') { s.phase = 'rest'; s.done.leg = 2; }
+    if (v === 'posledni') { s.phase = 'work'; s.done.leg = 3; }
+    if (v === 'dalsi') { s.order = all.slice(3); s.done.leg = 4; s.lastDone = 'leg'; }
+    if (v === 'odlozeno') { s.order = ['vesl', 'leg', 'ramena', 'zak', 'plank']; s.deferred = ['leg']; s.phase = 'work'; s.done.vesl = 1; }
+    return s;
+  }
+  cur() { return (this.state && this.state.order) ? this.state : this.init(); }
+  put(ch) { this.setState(Object.assign({}, this.cur(), ch)); }
+  fmt(n) { return String(Math.round(n * 10) / 10).replace('.', ','); }
+  candidates() {
+    var s = this.cur(), E = this.ex(), first = s.order[0];
+    if (E[first].block !== 'hlavni') return [first];
+    return s.order.filter(function (k) { return E[k].block === 'hlavni'; });
+  }
+  go(i) {
+    var s = this.cur(), c = this.candidates(), id = c[i], skipped = c.slice(0, i);
+    var rest = s.order.filter(function (k) { return k !== id && skipped.indexOf(k) < 0; });
+    var deferred = s.deferred.filter(function (k) { return k !== id; });
+    skipped.forEach(function (k) { if (deferred.indexOf(k) < 0) deferred.push(k); });
+    this.put({ order: [id].concat(skipped, rest), deferred: deferred, phase: 'work', lastDone: '' });
+  }
+  logSet() {
+    var s = this.cur(), id = s.order[0], e = this.ex()[id], d = (s.done[id] || 0) + 1, done = Object.assign({}, s.done);
+    done[id] = d;
+    if (d < e.sets) this.put({ done: done, phase: 'rest' });
+    else this.put({ done: done, order: s.order.slice(1), deferred: s.deferred.filter(function (k) { return k !== id; }), phase: 'next', lastDone: id });
+  }
+  plan(x) { return x.sets + ' série · ' + (x.time ? x.reps + ' s' : x.reps + '×') + (x.time || !x.w ? '' : ' · ' + this.fmt(x.w) + ' kg'); }
+  renderVals() {
+    var self = this, s = this.cur(), E = this.ex(), id = s.order[0], e = E[id], done = s.done[id] || 0;
+    var next = s.phase === 'next', work = s.phase === 'work', rest = s.phase === 'rest';
+    var blocks = { uvod: 'Úvod', hlavni: 'Hlavní část', zaver: 'Závěr' };
+    var cand = this.candidates();
+    var cards = cand.map(function (k, i) {
+      var x = E[k], len = x.name.length, isBack = s.deferred.indexOf(k) >= 0;
+      var hint;
+      if (cand.length === 1) hint = x.block === 'uvod' ? 'Úvod jede podle plánu. Nachystej si stroj a jdeme.' : (x.block === 'zaver' ? 'Závěr, už jen kousek. Ty to dáš.' : 'Nachystej si stroj a jdeme.');
+      else if (i === 0) hint = 'Obsazeno? Švihni kartu doleva, k tomuhle se vrátíme.';
+      else hint = E[cand[0]].name + ' počká, vrátíme se k němu hned potom.';
+      return {
+        name: x.name,
+        nameStyle: 'font-size: ' + (len > 22 ? 34 : (len > 12 ? 42 : 52)) + 'px',
+        tag: i === 0 ? (isBack ? 'Vracíme se' : 'Na řadě') : 'Nebo tohle',
+        tagStyle: i === 0 ? 'background: #1C2024; color: #F2F4F1' : 'background: #E3B23C; color: #1C2024',
+        blockLabel: blocks[x.block],
+        plan: self.plan(x),
+        hint: hint,
+        imgLeg: x.img === 'leg', imgRow: x.img === 'row', imgNone: !x.img,
+        go: function () { self.go(i); }
+      };
+    });
+    var lastSet = done + 1 === e.sets;
+    var final = work && lastSet && s.order.length === 1;
+    var hasW = !e.time && e.w > 0;
+    var what = e.time ? (e.reps + ' s') : (e.reps + '×');
+    var cheer;
+    if (lastSet && s.order.length === 1) cheer = 'Poslední série celého tréninku. Dej do toho všechno!';
+    else if (lastSet) cheer = 'Poslední série. Dotáhni to!';
+    else if (done === 0) cheer = 'První série. V klidu a čistě.';
+    else if (done + 2 === e.sets) cheer = 'Ještě tahle a jedna. Jde ti to.';
+    else cheer = 'Drž tempo, jedeš.';
+    var restTitles = ['Série ' + done + ' je doma.', 'Dobrá práce.', 'Pěkně ti to jde.'];
+    var after = s.order.length > 1 ? E[s.order[1]].name : '';
+    var then;
+    if (next) then = cand.length > 1 ? 'Ve frontě ještě ' + (s.order.length - 1) + ' cviky' : (after ? 'Pak: ' + after : 'Poslední cvik tréninku');
+    else then = after ? 'Pak: ' + after + (s.deferred.indexOf(s.order[1]) >= 0 ? ' (vracíme se)' : '') : 'Poslední cvik tréninku';
+    var doneCount = 7 - s.order.length;
+    var progress = [];
+    for (var i = 0; i < 7; i++) progress.push({ style: i < doneCount ? 'background: #3FAF6B' : (i === doneCount ? 'background: #F2F4F1' : 'background: #3A4148') });
+    var dots = [];
+    for (var j = 0; j < e.sets; j++) dots.push({ isDone: j < done, isCur: j === done, isTodo: j > done });
+    return {
+      next: next, work: work, rest: rest,
+      cvikNo: doneCount + 1,
+      hasToast: next,
+      toast: s.lastDone ? E[s.lastDone].name + ' máš v kapse!' : 'Převlečený? Tak jdeme na to!',
+      cards: cards,
+      e: e,
+      setNo: done + 1,
+      dots: dots,
+      dotsLabel: 'Hotové série: ' + done + ' ze ' + e.sets,
+      big: String(e.reps),
+      bigUnit: e.time ? 's' : '×',
+      weightLine: hasW ? 'na ' + this.fmt(e.w) + ' kg' : (e.time ? 'výdrž' : 'vlastní váha'),
+      targetAria: 'Teď: ' + what + (hasW ? ' na ' + this.fmt(e.w) + ' kg' : ''),
+      cheer: cheer,
+      final: final,
+      notFinal: !final,
+      ctaLabel: final ? 'Hotovo, trénink je tvůj!' : (lastSet ? 'Série i cvik hotový' : 'Série hotová'),
+      logSet: function () { self.logSet(); },
+      restTitle: restTitles[(done - 1) % 3],
+      restLine: 'Dej si tolik času, kolik potřebuješ. Až budeš chtít, jdeme dál.',
+      nextSet: what + (hasW ? ' na ' + this.fmt(e.w) + ' kg' : ''),
+      startSet: function () { self.put({ phase: 'work' }); },
+      thenText: then,
+      doneCount: doneCount,
+      progress: progress
+    };
+  }
+}
+</script>
+</body>
+</html>
