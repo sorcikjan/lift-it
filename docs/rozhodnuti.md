@@ -25,3 +25,6 @@ Když s něčím nesouhlasíš, napiš a změním to.
 | 18 | Série navíc (B15) | Na kartě Na řadě hned po dokončeném cviku odkaz „Ještě jedna série navíc“; ve shrnutí „+“ u cviku. | Bez ± tlačítek v tréninku, jedno ťuknutí. |
 | 19 | Rozsah opakování | Na kartě Cvičím se ukáže celý rozsah („8–10“); zalogují se horní hodnoty, opravit jde ve shrnutí. | Váhy a opakování určuje plán, odchylky se opravují po tréninku. |
 | 20 | Google token | Viz fáze 2: obnovovací token od Googlu se po přihlášení uloží šifrovaně na serveru; když vyprší, appka požádá o nové přihlášení. | PRD, kapitola Technická rizika. |
+| 21 | Grafy progresu | Grafy jsou na tmavším pozadí (#1C2024) a mají přepínač „Zobrazit jako tabulku“. Každý graf má jen jednu osu. | Modrá #2F6FE4 má na kartě #2A3036 kontrast jen 2,87:1; na #1C2024 projde. |
+| 22 | Změna síly v % | Počítá se z odhadu 1RM (Epley, jen série do 12 opakování); výchozí stav = první trénink cviku. „Celkově silnější“ = průměr změn přes cviky. | Srovná se i trénink s jinými opakováními. |
+| 23 | Sdílený odkaz | Odkaz platí bez omezení, dokud ho cvičenec nesmaže; ukazuje jen jeden trénink. | Nejjednodušší; trenér ho otevře kdykoli. |

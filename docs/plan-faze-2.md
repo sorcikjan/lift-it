@@ -25,8 +25,18 @@ Požadavky: A1–A5, D1–D4, E1.
 
 ## Akceptační kritéria (PRD)
 
-- [ ] Vložení odkazu na sheet a import týdne do 1 min; podruhé bez mapování.
-- [ ] Neznámý název cviku jde spárovat jedním ťuknutím a příště se spáruje sám.
-- [ ] Opětovný import nezmění už odcvičené tréninky.
-- [ ] Detail cviku ukazuje vývoj od prvního tréninku a změnu v %.
-- [ ] Trenér otevře odkaz na shrnutí bez přihlášení.
+- [x] Vložení odkazu na sheet a import týdne do 1 min; podruhé bez mapování.
+  Ověřeno: e2e `faze2.spec.ts` „A1, A2, A5“ — import odkazem přes mock modulu Sheets měří čas (< 60 s, ve skutečnosti ~5 s),
+  při druhém importu stejného listu se mapování nezobrazí. Unit testy modulu: rozbor odkazu, API v4 s tokenem,
+  vypršený token → požádat o přihlášení, CSV záloha, neveřejný sheet, mock. **Proti skutečnému Google sheetu neověřeno** (chybí OAuth klient).
+- [x] Neznámý název cviku jde spárovat jedním ťuknutím a příště se spáruje sám.
+  Ověřeno: e2e `import.spec.ts` (fáze 1) — spárování jedním ťuknutím, alias se uloží, další import už název nehlásí; unit testy `matchExercise`.
+- [x] Opětovný import nezmění už odcvičené tréninky.
+  Ověřeno: e2e „A1, A2, A5“ — po odcvičení Tréninku A se reimportuje list se změněnými váhami; Trénink A zůstane (40 kg, 7 cviků),
+  Trénink B se aktualizuje (5 × 5, 50 kg), appka hlásí „Aktualizováno 1 neodcvičených tréninků“.
+- [x] Detail cviku ukazuje vývoj od prvního tréninku a změnu v %.
+  Ověřeno: e2e „D1, D2, E1“ — dva tréninky, ve druhém leg press 45 kg; seznam ukazuje +13 %, detail „od začátku“, graf 1RM s výchozím stavem
+  a rekordem, tabulkové zobrazení; unit testy `progress.test.ts` (e1RM, změna od startu, rekordy, docházka). Screenshoty 04, 05.
+- [x] Trenér otevře odkaz na shrnutí bez přihlášení.
+  Ověřeno: e2e „D1, D2, E1“ — odkaz otevřený v novém kontextu prohlížeče bez cookie ukáže trénink, cviky a odchylky od plánu;
+  RLS test: anonym čte jen přes `get_shared_session(token)`.

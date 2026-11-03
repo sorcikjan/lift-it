@@ -24,3 +24,23 @@
 **Co potřebuju od tebe**
 - Zkontrolovat českou vrstvu knihovny (`seed/cs-exercises.json`, pole `zkontrolovano`).
 - 2–3 skutečné týdenní sheety jako CSV do `fixtures/` (parser je otestovaný jen na mých fixturách).
+
+## Fáze 2: Import a progres
+
+**Hotové**
+- Import odkazem na Google Sheet (A1): modul `src/integrations/google-sheets` za rozhraním — API v4 pod tokenem uživatele,
+  záloha přes CSV export pro veřejné sheety, mock nad fixturami. Výběr listu, náhled, uložení.
+- Zapamatované mapování sloupců (A2), opětovný import aktualizuje jen neodcvičené tréninky (A5).
+- Google obnovovací token se po přihlášení ukládá šifrovaně (AES-256-GCM) na server; když vyprší, appka požádá o přihlášení.
+- Progres (D1–D4): seznam cviků se změnou v % a sparkline, celkové „silnější o“, detail s grafem odhadu 1RM (výchozí stav + rekord),
+  max. váhou a objemem jako samostatnými grafy, tabulkové zobrazení, historie rekordů, docházka týdnů.
+- Sdílení shrnutí odkazem bez přihlášení (E1).
+
+**Ověření**
+- Vitest: 170 testů zelených (1 přeskočený: test proti skutečnému Postgresu, běží jen s `DATABASE_URL`).
+- Playwright 9/9 zelených, nové: import odkazem do 1 min + reimport, progres po dvou trénincích + sdílený odkaz v anonymním okně.
+- Screenshoty: `docs/screenshots/faze-2/`. Barvy grafů ověřené validátorem kontrastu (modrá #2F6FE4 na pozadí #1C2024).
+
+**Co není hotové / jen mock**
+- Čtení skutečného Google sheetu: kód hotový, ověřený jen proti mocku a zaznamenaným odpovědím API. Potřebuju OAuth klienta (viz `docs/setup.md`).
+- Nasazení na Vercel stále čeká na účty.
