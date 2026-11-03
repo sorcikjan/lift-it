@@ -123,7 +123,7 @@ export function deriveView(plan: WorkoutView, s: RunState): ScreenView {
       name: x.name,
       tag: i === 0 ? (isBack ? t('run.vracimeSe') : t('run.naRade')) : t('run.neboTohle'),
       tagKind: i === 0 ? (isBack ? 'back' : 'next') : 'alt',
-      blockLabel: t(`blok.${x.blok}`),
+      blockLabel: t(`blok.${x.blok}`) + (x.group ? ` · ${t('run.superserie', { group: x.group })}` : ''),
       plan: planLine(x),
       hint,
       images: x.images,

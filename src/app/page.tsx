@@ -81,9 +81,11 @@ export default function Home() {
       <ol aria-label={t('home.seznamAria')} className="mt-4 flex flex-col">
         {view.exercises.map((e, i) => {
           const l = listLine(e);
+          // B14: superserie se v seznamu číslují jako u trenéra (A1, A2)
+          const no = e.group ? `${e.group}${view.exercises.filter((x) => x.group === e.group).indexOf(e) + 1}` : String(i + 1);
           return (
             <li key={e.id} className="flex items-center gap-3 border-b border-linka py-3 last:border-0">
-              <span className="w-6 font-display text-[20px] font-semibold text-ocel tabular">{i + 1}</span>
+              <span className="w-8 font-display text-[20px] font-semibold text-ocel tabular">{no}</span>
               <Link href={`/knihovna/cvik?id=${encodeURIComponent(e.exerciseId)}`} className="min-w-0 flex-1 truncate text-[18px] font-semibold">{e.name}</Link>
               <span className="font-display text-[20px] font-semibold tabular">{l.sets}</span>
               <span className="w-[84px] text-right text-[16px] text-ocel tabular">{l.weight}</span>
