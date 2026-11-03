@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { doExercise, freshUser, loadSample, press, shot, stats } from './helpers';
+import { doExercise, fillStable, freshUser, loadSample, press, shot, stats } from './helpers';
 
 const URL = 'https://docs.google.com/spreadsheets/d/mock-tyden-hlavicka/edit#gid=0';
 
 async function importLink(page: import('@playwright/test').Page) {
   await page.goto('/import');
-  await page.getByRole('textbox', { name: 'Odkaz na Google Sheet' }).fill(URL);
+  await fillStable(page.getByRole('textbox', { name: 'Odkaz na Google Sheet' }), URL);
   await page.getByRole('button', { name: 'Načíst sheet' }).click();
   await expect(page.getByRole('heading', { name: 'Náhled' })).toBeVisible();
 }

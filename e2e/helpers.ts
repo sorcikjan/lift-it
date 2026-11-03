@@ -52,3 +52,13 @@ export async function doExercise(page: Page) {
     await press(page, page.getByRole('button', { name: 'Jdu na další sérii' }));
   }
 }
+
+/** Vyplnění hned po načtení stránky může přepsat hydratace Reactu; zkusí to znovu, dokud hodnota nedrží. */
+export async function fillStable(loc: import('@playwright/test').Locator, value: string) {
+  await expect(async () => {
+    await loc.fill(value);
+    await expect(loc).toHaveValue(value, { timeout: 500 });
+    await loc.page().waitForTimeout(150);
+    await expect(loc).toHaveValue(value, { timeout: 500 });
+  }).toPass({ timeout: 10_000 });
+}

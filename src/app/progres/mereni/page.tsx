@@ -27,8 +27,8 @@ export default function MeasurementsPage() {
   const submit = async () => {
     const values = Object.fromEntries(FIELDS.map(([k]) => [k, parseCzNumber(vals[k] ?? '')])) as MeasurementValues;
     if (Object.values(values).every((v) => v == null)) return;
+    setVals({}); // vyprázdnit hned, ať se neztratí, co uživatel mezitím píše
     await saveMeasurement(date, values);
-    setVals({});
     setSaved(true);
   };
 
