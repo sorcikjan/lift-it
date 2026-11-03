@@ -40,10 +40,17 @@ Cíl: použitelné v posilovně do 16. 11. 2026, plán se vkládá zkopírován�
 
 ## Akceptační kritéria (PRD)
 
-- [ ] Vložení tabulky z trenérova sheetu vytvoří trénink se správnými cviky, sériemi a váhami.
-- [ ] Zalogování série podle plánu = 1 ťuknutí; po něm karta přejde do stavu Vydýchej se, po poslední sérii na další kartu Na řadě.
+- [x] Vložení tabulky z trenérova sheetu vytvoří trénink se správnými cviky, sériemi a váhami.
+  Ověřeno: `e2e/import.spec.ts` (vložení TSV, náhled, párování překlepů, kontrola sérií a vah na domově) a 49 unit testů parseru. **Na skutečném sheetu zatím ne.**
+- [x] Zalogování série podle plánu = 1 ťuknutí; po něm karta přejde do stavu Vydýchej se, po poslední sérii na další kartu Na řadě.
+  Ověřeno: `e2e/trenink.spec.ts` (celá smyčka, 22 sérií v DB) a unit testy reduceru B4 → B5, B6.
 - [ ] Displej nezhasne během 60 min tréninku na tvém telefonu.
-- [ ] Zavření appky a znovuotevření vrátí stejnou kartu ve stejném stavu.
-- [ ] Celý trénink v režimu letadlo; po připojení jsou všechny série v databázi právě jednou.
-- [ ] Švihnutí karty Na řadě v hlavní části nabídne jiný cvik a přeskočený přijde hned po něm; v úvodu a závěru švihnout nejde.
-- [ ] Každý cvik z prvního týdne má obrázek a české kroky techniky.
+  Ověřeno jen v emulaci (`e2e/wakelock.spec.ts`: zámek drží, po návratu do appky se znovu vyžádá). **Čeká na test na iPhonu.**
+- [x] Zavření appky a znovuotevření vrátí stejnou kartu ve stejném stavu.
+  Ověřeno: `e2e/trenink.spec.ts` B9 (reload na kartě Vydýchej se) a unit test obnovy z JSON.
+- [x] Celý trénink v režimu letadlo; po připojení jsou všechny série v databázi právě jednou.
+  Ověřeno: `e2e/offline.spec.ts` (service worker, offline start i celý trénink, po připojení 22 = 22 unikátních, reload nic nezdvojí) a `tests/sync.test.ts`.
+- [x] Švihnutí karty Na řadě v hlavní části nabídne jiný cvik a přeskočený přijde hned po něm; v úvodu a závěru švihnout nejde.
+  Ověřeno: `e2e/trenink.spec.ts` B7 a 7 unit testů reduceru.
+- [x] Každý cvik z prvního týdne má obrázek a české kroky techniky.
+  Ověřeno: `tests/library.test.ts` (všech 7 cviků ukázkového Tréninku A má 2 obrázky a 3–5 kroků). Skutečný první týden od trenéra zatím nemám.
