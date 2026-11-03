@@ -8,10 +8,17 @@ const MAX_BATCH = 500;
  * odeslání stejné dávky nic nezdvojí. Konflikt = poslední zápis vyhrává (na úrovni řádku/série).
  * Každý řádek ve vlastním savepointu: jedna odmítnutá změna nezablokuje zbytek.
  */
-export async function applyChanges(db: Db, uid: string, changes: Change[]): Promise<SyncResult> {
+export interface ApplyOptions {
+  /** Povolené tabulky (výchozí všechny synchronizované). */
+  tables?: readonly SyncTable[];
+  /** Sloupce, které server vynutí (výchozí: vlastník tabulky = přihlášený). */
+  force?: Partial<Record<SyncTable, Record<string, unknown>>>;
+}
+
+export async function applyChanges(db: Db, uid: string, changes: Change[], opts: ApplyOptions = {}): Promise<SyncResult> {
   if (!Array.isArray(changes) || changes.length > MAX_BATCH) throw new Error('bad_batch');
   const sorted = changes
-    .filter((c) => c && c.table in SYNC_TABLES && c.row && typeof c.row.id === 'string')
+    .filter((c) => c && c.table in SYNC_TABLES && (!opts.tables || opts.tables.includes(c.table)) && c.row && typeof c.row.id === 'string')
     .sort((a, b) => SYNC_ORDER.indexOf(a.table) - SYNC_ORDER.indexOf(b.table));
   const result: SyncResult = { applied: [], rejected: [] };
 
@@ -20,13 +27,14 @@ export async function applyChanges(db: Db, uid: string, changes: Change[]): Prom
       const def = SYNC_TABLES[c.table];
       const row: Record<string, unknown> = {};
       for (const col of def.cols) if (col in c.row) row[col] = c.row[col];
-      if (def.owner) row[def.owner] = uid;
+      const forced = opts.force ? opts.force[c.table] : def.owner ? { [def.owner]: uid } : undefined;
+      if (forced) Object.assign(row, forced);
       if (c.table === 'exercises' && !String(row.id).startsWith('u-')) {
         result.rejected.push({ table: c.table, id: String(row.id), error: 'global_exercise' });
         continue;
       }
       const cols = Object.keys(row);
-      const updates = cols.filter((k) => k !== 'id' && k !== def.owner).map((k) => `${k} = excluded.${k}`);
+      const updates = cols.filter((k) => k !== 'id' && k !== def.owner && !(forced && k in forced)).map((k) => `${k} = excluded.${k}`);
       const sql = `insert into ${c.table} (${cols.join(', ')})
         select ${cols.join(', ')} from jsonb_populate_record(null::${c.table}, $1::jsonb)
         on conflict (id) do ${updates.length ? `update set ${updates.join(', ')}` : 'nothing'}`;
@@ -48,7 +56,15 @@ const agg = (from: string) => `select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jso
 
 /** Všechno, co patří cvičenci (pro další zařízení a plány od trenéra). Jen vlastní data, ne data klientů. */
 export async function pullAll(db: Db, uid: string): Promise<Record<SyncTable | 'profile', unknown>> {
-  return db.asUser(uid, async (tx) => {
+  return pullFor(db, uid, uid);
+}
+
+/**
+ * Data jednoho cvičence očima přihlášeného (viewer). Trenér tak čte data klienta pod svým RLS:
+ * vidí i koncepty týdnů, ale nic z jiných klientů.
+ */
+export async function pullFor(db: Db, viewer: string, uid: string): Promise<Record<SyncTable | 'profile', unknown>> {
+  return db.asUser(viewer, async (tx) => {
     const q = async (from: string, params: unknown[] = [uid]) =>
       (await tx.query<{ r: unknown[] }>(agg(from), params))[0].r;
     const progs = `(select id from programs where client_id = $1)`;
