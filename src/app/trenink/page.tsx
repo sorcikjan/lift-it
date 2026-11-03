@@ -1,4 +1,5 @@
 'use client';
+import { Plates } from '@/components/Plates';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { activeRun, dispatchRun, endWorkoutEarly, saveNote, workoutView } from '@/client/repo';
@@ -165,6 +166,7 @@ function WorkCard({ v, onLog }: { v: ScreenView; onLog: () => void }) {
         <span className="text-[64px] font-semibold text-modra-svetla">{v.bigUnit}</span>
       </p>
       <p className="mt-2.5 font-display text-[32px] font-bold tabular">{v.weightLine}</p>
+      <Plates kg={v.barWeight} className="mt-1.5 text-modra-svetla" />
       <p className="mt-4 text-[19px] font-medium">{v.cheer}</p>
       {v.supersetNext && <p className="mt-1 text-[16px] text-modra-svetla">{t('run.superserieDalsi', { name: v.supersetNext })}</p>}
       <button type="button" onClick={onLog} data-testid="log-set"
@@ -198,6 +200,7 @@ function RestCard({ v, sessionId, onNext }: { v: ScreenView; sessionId: string; 
       <div className="mt-6 rounded-[18px] bg-guma/10 p-4">
         <p className="text-[15px] font-semibold text-zluta-tmava">{v.nextSetLabel}</p>
         <p className="mt-1 font-display text-[40px] font-bold tabular">{v.nextSet}</p>
+        <Plates kg={v.barWeight} className="mt-1 text-zluta-tmava" />
       </div>
       {noteOpen ? (
         <textarea autoFocus value={note} onChange={(ev) => setNote(ev.target.value)} onBlur={() => { void saveNote(sessionId, e.exerciseId, note); setNoteOpen(false); }}

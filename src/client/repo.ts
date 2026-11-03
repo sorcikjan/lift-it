@@ -191,6 +191,7 @@ export async function workoutView(workoutId: string): Promise<WorkoutView | null
       images: ex?.images ?? [],
       steps: ex?.steps_cs ?? [],
       coachNote: p.coach_note,
+      equipment: ex?.equipment ?? null,
       sets: sets.filter((s) => s.planned_exercise_id === p.id).sort((a, b) => a.number - b.number).map((s) => ({
         id: s.id, number: s.number, repsMin: s.reps_min, repsMax: s.reps_max, weightKg: s.weight_kg == null ? null : Number(s.weight_kg),
         timeS: s.time_s, kind: s.kind, toFailure: s.to_failure,

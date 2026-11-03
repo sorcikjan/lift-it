@@ -102,6 +102,7 @@ export interface WorkoutExerciseView {
   images: string[];
   steps: string[];
   coachNote: string | null;
+  equipment?: string | null;
   sets: PlanSetView[];
 }
 export interface WorkoutView {

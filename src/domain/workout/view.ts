@@ -3,6 +3,7 @@
  * Žádný text tu není natvrdo, jen klíče a proměnné.
  */
 import { fmtKg } from '../format';
+import { usesBar } from '../plates';
 import type { PlanSetView, WorkoutExerciseView, WorkoutView } from '../types';
 import { candidates, setCount, type RunState } from './reducer';
 import { cviku, serie, t } from '@/i18n/t';
@@ -89,6 +90,8 @@ export interface ScreenView {
   doneCount: number;
   progress: ('done' | 'cur' | 'todo')[];
   progressLabel: string;
+  /** Váha aktuální (u pauzy příští) série na čince, pro kotouče; jinak null. */
+  barWeight: number | null;
   canUndo: boolean;
   canExtraSet: string | null;  // název cviku pro sérii navíc
   supersetNext: string | null;
@@ -198,6 +201,7 @@ export function deriveView(plan: WorkoutView, s: RunState): ScreenView {
     doneCount,
     progress,
     progressLabel: t('run.hotoveCvikyAria', { done: doneCount, total }),
+    barWeight: hasW && usesBar(e?.equipment) ? set!.weightKg! : null,
     canUndo: s.history.length > 0,
     canExtraSet: s.phase === 'next' && s.lastDone ? E.get(s.lastDone)?.name ?? null : null,
     supersetNext: s.phase === 'work' && partner ? partner.name : null,
