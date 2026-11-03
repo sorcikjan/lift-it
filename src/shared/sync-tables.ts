@@ -10,7 +10,7 @@ export const SYNC_TABLES = {
   workouts: { owner: null, cols: ['id', 'week_id', 'label', 'position', 'planned_date', 'note', 'archived'] },
   planned_exercises: { owner: null, cols: ['id', 'workout_id', 'exercise_id', 'position', 'blok', 'group_label', 'coach_note', 'source_name', 'archived'] },
   planned_sets: { owner: null, cols: ['id', 'planned_exercise_id', 'number', 'reps_min', 'reps_max', 'weight_kg', 'time_s', 'kind', 'to_failure', 'archived'] },
-  sessions: { owner: 'user_id', cols: ['id', 'user_id', 'workout_id', 'started_at', 'ended_at', 'with_coach', 'note', 'status', 'actual_order', 'source', 'archived'] },
+  sessions: { owner: 'user_id', cols: ['id', 'user_id', 'workout_id', 'started_at', 'ended_at', 'with_coach', 'note', 'status', 'actual_order', 'source', 'strava_activity_id', 'pairing_status', 'hr_avg', 'hr_max', 'kcal', 'garmin_activity_id', 'archived'] },
   logged_sets: { owner: null, cols: ['id', 'session_id', 'exercise_id', 'planned_set_id', 'planned_exercise_id', 'number', 'reps', 'weight_kg', 'time_s', 'rpe', 'skipped', 'extra', 'kind', 'logged_at', 'archived'] },
   session_notes: { owner: null, cols: ['id', 'session_id', 'exercise_id', 'text', 'archived'] },
   measurements: { owner: 'user_id', cols: ['id', 'user_id', 'measured_on', 'weight_kg', 'waist_cm', 'chest_cm', 'hips_cm', 'arm_cm', 'thigh_cm', 'archived'] },

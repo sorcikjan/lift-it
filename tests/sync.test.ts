@@ -69,4 +69,11 @@ describe('sync: idempotentní upsert', () => {
     const otherData = await pullAll(db, other);
     expect(otherData.sessions).toHaveLength(0);
   });
+
+  it('G5: tep, kalorie a stav párování ze Stravy se uloží na server', async () => {
+    const [sess] = (await pullAll(db, me)).sessions as Record<string, unknown>[];
+    await applyChanges(db, me, [{ table: 'sessions', row: { ...sess, strava_activity_id: 123, pairing_status: 'paired', hr_avg: 118, hr_max: 156, kcal: 342 } }]);
+    const [after] = (await pullAll(db, me)).sessions as Record<string, unknown>[];
+    expect(after).toMatchObject({ strava_activity_id: 123, pairing_status: 'paired', hr_avg: 118, hr_max: 156, kcal: 342 });
+  });
 });
