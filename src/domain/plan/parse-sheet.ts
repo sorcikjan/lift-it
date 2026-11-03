@@ -313,8 +313,9 @@ export function guessMapping(rows: string[][]): SheetMapping {
   };
   pick('exercise', (s) => /[a-zá-ž]{3,}/i.test(s) && !parseSetsReps(s) && parseWeight(s) === undefined, 0.4);
   pick('sets', (s) => !!parseSetsReps(s), 0.5);
-  if (!taken.has('sets')) pick('sets', (s) => /^\d$/.test(s.trim()), 0.6);
-  pick('reps', (s) => !!parseReps(s) && !/kg/i.test(s), 0.6);
+  const combined = taken.has('sets'); // „3x10“: série i opakování v jednom sloupci
+  if (!combined) pick('sets', (s) => /^\d$/.test(s.trim()), 0.6);
+  if (!combined) pick('reps', (s) => !!parseReps(s) && !/kg/i.test(s), 0.6);
   pick('weight', (s) => /kg|,\d|\d\/\d|^bw$/i.test(s) || (parseWeight(s) !== undefined && Number(parseCzNumber(s)) > 4), 0.5);
   for (let c = 0; c < width; c++) if (!columns[c]) columns[c] = 'ignore';
   return { headerRow: null, columns };

@@ -99,6 +99,10 @@ describe('A7: nadpisy tréninků a bloků v listu', () => {
     expect(a2.sets).toHaveLength(4);
   });
   it('rotoped 1x5 min = 300 s', () => expect(draft.workouts[0].exercises[0].sets[0].timeS).toBe(300));
+  it('váhy ve sloupci za „4x10“', () => {
+    expect(draft.workouts[0].exercises[2].sets[0].weightKg).toBe(40);
+    expect(draft.workouts[1].exercises[0].sets[0].weightKg).toBe(42.5);
+  });
 });
 
 describe('A4: nejasné buňky se zvýrazní, nezahodí', () => {
