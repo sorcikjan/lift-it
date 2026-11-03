@@ -64,3 +64,17 @@
 **Jen mock / neověřené**
 - Strava a zápis do sheetu běží proti mockům; skutečné API potřebují účty (souhrnný seznam na konci).
 - Kritérium „položky upravené podle zkušeností z prvních tréninků“ čeká na tvoje připomínky.
+
+## Fáze 4: Trenér v appce
+
+**Hotové:** role trenéra a pozvánka odkazem (E2), editor plánu: kopie minulého týdne jako koncept, +2,5 kg, úprava tréninku, publikace (E3),
+přehled klienta (E4), komentáře obousměrně (E5), web push s VAPID (E6), filtry knihovny (C5).
+Opraveno: tep a kalorie ze Stravy se teď synchronizují na server. Počet v knihovně ukazuje všechny nalezené cviky.
+
+**Ověření:** Vitest 229 zelených (1 přeskočený), Playwright 14/14. Screenshoty `docs/screenshots/faze-4/`.
+
+**Jen mock:** web push, Strava, zápis do sheetu, Google Sheets. **Nenasazeno na Vercel:** chybí účty.
+
+**Co potřebuju od tebe (souhrnně):** Supabase projekt, Google OAuth klient, Vercel účet napojený na repo, Strava aplikace,
+klíče VAPID a `TOKEN_ENCRYPTION_KEY` (postup v `docs/setup.md`). Dál kontrola české knihovny, 2–3 skutečné sheety jako CSV do `fixtures/`
+a test v posilovně na iPhonu.

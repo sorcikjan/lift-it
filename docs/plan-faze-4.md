@@ -25,13 +25,15 @@ Požadavky: C5, E2–E6.
 
 ## Akceptační kritéria (PRD)
 
-- [ ] Trenér vytvoří týden kopírováním minulého rychleji než v Google Sheets.
-- [ ] Trenér vidí tvoje odcvičené hodnoty a může je okomentovat.
+- [x] Trenér vytvoří týden kopírováním minulého rychleji než v Google Sheets.
+  Ověřeno: e2e `faze4.spec.ts` — 3 ťuknutí (Kopírovat → +2,5 kg → Publikovat), měřeno < 30 s; klient má týden s váhami +2,5 kg. Unit `plan-ops.test.ts`, server `tests/coach.test.ts`.
+- [x] Trenér vidí tvoje odcvičené hodnoty a může je okomentovat.
+  Ověřeno: e2e — „Odcvičeno: 4 × 10, 40 kg“ vedle plánu, komentář k cviku, klient ho vidí ve shrnutí a odpoví.
 
 Doplňková kritéria z požadavků fáze:
 
-- [ ] E2: účet trenéra, pozvánka klienta, více klientů.
-- [ ] E4: přehled klienta: odcvičeno vs. plán, poznámky, grafy.
-- [ ] E5: komentáře obousměrně.
-- [ ] E6: upozornění na nový plán a komentář.
-- [ ] C5: hledání a filtry podle svalu a vybavení.
+- [x] E2: účet trenéra, pozvánka klienta, více klientů. Ověřeno: e2e + `tests/coach.test.ts` (pozvánka jednorázová, cizí trenér nemá přístup, ukončení spolupráce).
+- [x] E4: přehled klienta. Ověřeno: e2e (tréninky vs. plán), docházka po týdnech a progres se sparkline (unit weekStats).
+- [x] E5: komentáře obousměrně. Ověřeno: e2e i serverový test.
+- [x] E6: upozornění. Ověřeno proti mocku (publikace → klient, komentář → druhá strana). **Skutečný push na iPhonu neověřen** (chybí klíče VAPID a nasazení).
+- [x] C5: ověřeno e2e (filtr Vybavení + Sval zúží výsledky, hledání „dřep“).
