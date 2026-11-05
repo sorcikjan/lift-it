@@ -75,7 +75,12 @@ function Summary() {
     <Page>
       <div className="min-h-8 pt-2"><SyncBadge /></div>
       <header className="pb-4 pt-2">
-        <h1 className="font-display text-[44px] font-bold leading-none">{workout ? t('summary.hotovy', { label: workout.label }) : t('summary.hotovyBezPlanu')}</h1>
+        <svg viewBox="0 0 110 110" className="mb-5 mt-2 h-[96px] w-[96px] overflow-visible" aria-hidden="true">
+          <circle cx="55" cy="55" r="48" fill="none" strokeWidth="9" className="stroke-grafit-2" />
+          <circle cx="55" cy="55" r="48" fill="none" strokeWidth="9" strokeLinecap="round" className="ring-fg stroke-splneno" transform="rotate(-90 55 55)" style={{ filter: 'drop-shadow(0 0 8px #34C77B66)' }} />
+          <path d="M36 56l13 13 25-27" fill="none" stroke="#fff" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" className="ring-ck" />
+        </svg>
+        <h1 className="rise font-display text-[52px] font-extrabold leading-[0.92]">{workout ? t('summary.hotovy', { label: workout.label }) : t('summary.hotovyBezPlanu')}</h1>
         <p className="mt-1 text-[17px] text-ocel">{dayLabel(session.started_at)}</p>
       </header>
 
@@ -92,7 +97,7 @@ function Summary() {
         {records.length ? (
           <ul className="mt-2 flex flex-col gap-2">
             {records.map((r) => (
-              <li key={`${r.exerciseId}-${r.type}-${r.weight}`} className="flex items-center gap-3 rounded-[18px] bg-grafit p-3">
+              <li key={`${r.exerciseId}-${r.type}-${r.weight}`} className="rise flex items-center gap-3 rounded-[18px] border border-hrana bg-grafit p-3">
                 <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-splneno text-guma"><Trophy size={22} /></span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[18px] font-semibold">{name(r.exerciseId)}</p>
@@ -112,7 +117,7 @@ function Summary() {
         <p className="text-[15px] text-ocel">{t('summary.odchylkyText')}</p>
         <ul className="mt-2 flex flex-col gap-2">
           {groups.map((g) => (
-            <li key={g.exerciseId} className="rounded-[18px] bg-grafit p-3">
+            <li key={g.exerciseId} className="rounded-[18px] border border-hrana bg-grafit p-3">
               <p className="text-[18px] font-semibold">{name(g.exerciseId)}</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {g.sets.map((s) => (
@@ -174,7 +179,7 @@ function setLabel(s: LoggedSet) {
 
 function Stat({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
-    <div className="rounded-[18px] bg-grafit p-3">
+    <div className="rise rounded-[18px] border border-hrana bg-grafit p-3">
       <dt className="text-[14px] text-ocel">{label}</dt>
       <dd className="font-display text-[34px] font-bold leading-tight tabular">{value} <span className="text-[17px] font-semibold text-ocel">{unit}</span></dd>
     </div>

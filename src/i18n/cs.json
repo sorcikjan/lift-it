@@ -62,7 +62,18 @@
     "vyberTrenink": "Vyber trénink",
     "hotovyTyden": "Týden máš splněný. Klidně si dej další.",
     "garminTip": "Tip: na hodinkách spusť profil Silový trénink, ne obecnou aktivitu. Data pak sedí lépe.",
-    "upravitTrenink": "Upravit trénink"
+    "upravitTrenink": "Upravit trénink",
+    "ahoj": "Ahoj, {name}.",
+    "ahojBezJmena": "Ahoj.",
+    "podnadpis": "Dnes tě čeká trénink od trenéra.",
+    "podnadpisHotovo": "Týden máš splněný. Klidně si dej další.",
+    "dnesniTrenink": "Dnešní trénink",
+    "rozbehnutyTrenink": "Rozběhnutý trénink",
+    "serii": "{n} {serie}",
+    "minut": "≈ {n} min",
+    "dalsich": "+ {n} dalších",
+    "vsechnyCviky": "Ukázat všechny cviky",
+    "mene": "Méně"
   },
   "run": {
     "hlavicka": "Trénink {label} · cvik {n} ze {total}",
@@ -476,5 +487,39 @@
     "s_trenerem": "s_trenerem",
     "poznamka": "poznamka",
     "soubor": "lift-it-serie-{date}.csv"
+  },
+  "landing": {
+    "claim1": "Každodenní cvičení",
+    "claim2": "jednodušší.",
+    "lede": "Plán od trenéra v telefonu. V posilovně jedno ťuknutí po sérii, appka si pamatuje, co jsi zvedl minule.",
+    "google": "Pokračovat přes Google",
+    "fine": "Účet slouží k uložení tvých tréninků.",
+    "bezUctu": "Zatím vyzkoušet bez účtu"
+  },
+  "profil": {
+    "nadpis": "Profil",
+    "domu": "Domů",
+    "cviciOd": "Cvičí od {date}",
+    "zatimNic": "První trénink tě teprve čeká",
+    "tydenAria": "Tento týden: {n} z 7 dní s tréninkem",
+    "dny": [
+      "po",
+      "út",
+      "st",
+      "čt",
+      "pá",
+      "so",
+      "ne"
+    ],
+    "treninku": "tréninků",
+    "serii": "sérií",
+    "tydne": "tento týden",
+    "nastaveni": "Nastavení a data",
+    "displej": "Displej při tréninku",
+    "displejText": "Nezhasne, dokud trénink běží",
+    "zapnuto": "Zapnuto",
+    "stravaBrzy": "Tep a kalorie z hodinek přes Stravu. Propojení se připravuje.",
+    "host": "Bez účtu",
+    "hostText": "Tréninky jsou zatím jen v tomhle telefonu. Přihlas se, ať se neztratí."
   }
 }

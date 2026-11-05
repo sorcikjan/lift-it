@@ -49,7 +49,7 @@ export function PageTitle({ title, back, sub, right }: { title: string; back?: s
 }
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <section className={`rounded-[20px] bg-grafit p-4 ${className}`}>{children}</section>;
+  return <section className={`rounded-[20px] border border-hrana bg-grafit p-4 ${className}`}>{children}</section>;
 }
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {

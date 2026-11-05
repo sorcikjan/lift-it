@@ -63,10 +63,19 @@ function StravaCard() {
     void stravaStatus().then(setSt);
     setError(new URLSearchParams(location.search).get('strava') === 'chyba');
   }, []);
-  if (!st?.configured) return null;
+  if (!st) return null;
+  const head = (
+    <div className="flex items-center gap-3">
+      <span className="flex h-[38px] w-[38px] flex-none items-center justify-center rounded-[11px] bg-[#FC4C02]" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M10 2l-6 12h4l2-4 2 4h4z" /><path d="M15.5 14l-2 4-2-4h-3l5 10 5-10z" opacity=".7" /></svg>
+      </span>
+      <h2 className="font-display text-[24px] font-bold">{t('strava.nadpis')}</h2>
+    </div>
+  );
+  if (!st.configured) return <Card className="mt-4">{head}<p className="mt-2 text-[16px] text-ocel">{t('profil.stravaBrzy')}</p></Card>;
   return (
     <Card className="mt-4">
-      <h2 className="font-display text-[24px] font-bold">{t('strava.nadpis')}</h2>
+      {head}
       {error && <div className="mt-2"><Toast tone="info">{t('strava.chybaPropojeni')}</Toast></div>}
       {st.connected ? (
         <>
