@@ -5,7 +5,7 @@ import { ClientBoot } from '@/components/ClientBoot';
 import './globals.css';
 
 const barlow = Barlow({ subsets: ['latin', 'latin-ext'], weight: ['400', '500', '600', '700'], variable: '--font-barlow' });
-const condensed = Barlow_Condensed({ subsets: ['latin', 'latin-ext'], weight: ['500', '600', '700'], variable: '--font-barlow-condensed' });
+const condensed = Barlow_Condensed({ subsets: ['latin', 'latin-ext'], weight: ['500', '600', '700', '800'], variable: '--font-barlow-condensed' });
 
 export const metadata: Metadata = {
   title: t('app.name'),
@@ -19,7 +19,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#1C2024',
+  themeColor: '#111418',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -5,7 +5,7 @@ import { shortDate } from '@/domain/dates';
 
 export interface Point { date: string; value: number; detail?: string }
 
-const INK = '#F2F4F1', MUTED = '#9AA3AB', GRID = '#2A3036', DATA = '#2F6FE4';
+const INK = '#F2F4F1', MUTED = '#9AA3AB', GRID = '#1B1F24', DATA = '#3B7BFF';
 
 /**
  * Jedna série v čase: čára 2 px, body ≥ 8 px (jeden bod = jeden trénink), tiché osy a mřížka,
@@ -30,14 +30,14 @@ export function TimeChart({ points, unit, baseline, record, label }: {
             {record && <ReferenceLine y={record.value} stroke={GRID} label={{ value: record.label, position: 'insideTopLeft', fill: INK, fontSize: 12 }} />}
             <Tooltip
               cursor={{ stroke: MUTED, strokeWidth: 1 }}
-              contentStyle={{ background: '#2A3036', border: '1px solid #3A4148', borderRadius: 12, color: INK }}
+              contentStyle={{ background: '#1B1F24', border: '1px solid #323A42', borderRadius: 12, color: INK }}
               labelStyle={{ color: MUTED }}
               labelFormatter={(d) => shortDate(String(d))}
               formatter={(v, _n, item) => [`${fmtNum(Number(v), 1)} ${unit}${(item.payload as Point).detail ? ` · ${(item.payload as Point).detail}` : ''}`, '']}
               separator=""
             />
             <Line type="monotone" dataKey="value" stroke={DATA} strokeWidth={2} isAnimationActive={false}
-              dot={{ r: 5, fill: DATA, stroke: '#1C2024', strokeWidth: 2 }} activeDot={{ r: 7, fill: DATA, stroke: INK, strokeWidth: 2 }} />
+              dot={{ r: 5, fill: DATA, stroke: '#111418', strokeWidth: 2 }} activeDot={{ r: 7, fill: DATA, stroke: INK, strokeWidth: 2 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>

@@ -53,7 +53,7 @@ export default function MeasurementsPage() {
       </Card>
 
       {weights.length >= 2 && (
-        <section className="mt-5 rounded-[20px] bg-[#1C2024] py-3">
+        <section className="mt-5 rounded-[20px] bg-[#111418] py-3">
           <h2 className="px-3 text-[17px] font-semibold">{t('mereni.graf')}</h2>
           <TimeChart points={weights} unit={t('common.kg')} label={t('mereni.graf')} />
         </section>
