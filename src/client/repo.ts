@@ -377,3 +377,12 @@ export async function createEmptyWorkout(label = 'A'): Promise<string> {
   await save('workouts', [wo as unknown as Row]);
   return wo.id;
 }
+
+/** „Minule“ pro cviky tréninku (nový design obrazovky tréninku). */
+export async function lastTimesFor(exerciseIds: string[], currentSessionId: string | null) {
+  const { lastTimes } = await import('@/domain/workout/last');
+  const d = db();
+  const sets = await d.logged_sets.where('exercise_id').anyOf(exerciseIds).toArray();
+  const sessions = (await d.sessions.bulkGet([...new Set(sets.map((s) => s.session_id))])).filter((s): s is Session => !!s);
+  return lastTimes(sets, sessions, currentSessionId);
+}
