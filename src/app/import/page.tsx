@@ -11,6 +11,7 @@ import { exerciseName } from '@/client/library';
 import { loadMatchIndex, resolveAll } from '@/client/importer';
 import { mondayOf, reimportWeek, saveAlias, saveWeek } from '@/client/repo';
 import { SheetLinkInput } from '@/components/SheetLinkInput';
+import { XlsxFileInput } from '@/components/XlsxFileInput';
 import { BottomNav } from '@/components/BottomNav';
 import { ExercisePicker } from '@/components/ExercisePicker';
 import { Check } from '@/components/icons';
@@ -23,7 +24,7 @@ export default function ImportPage() {
   return <Suspense><Import /></Suspense>;
 }
 
-interface Source { rows: string[][]; kind: 'paste' | 'sheet'; sheetUrl?: string; sheetTab?: string | null; spreadsheetId?: string }
+interface Source { rows: string[][]; kind: 'paste' | 'sheet' | 'file'; sheetUrl?: string; sheetTab?: string | null; spreadsheetId?: string }
 
 /** Import týdne (A1–A5, A7): vložit odkaz nebo tabulku → mapování → náhled → uložit. */
 function Import() {
@@ -62,7 +63,7 @@ function Import() {
   const load = (rows: string[][], extra: Omit<Source, 'rows'>, savedMapping?: SheetMapping | null) => {
     setSource({ rows, ...extra });
     setMapping(savedMapping ?? guessMapping(rows));
-    setShowMapping(!savedMapping && guessMapping(rows).headerRow == null);
+    setShowMapping(extra.kind !== 'file' && !savedMapping && guessMapping(rows).headerRow == null);
     setPicks({});
   };
 
@@ -110,6 +111,7 @@ function Import() {
 
       {!source && (
         <div className="flex flex-col gap-5">
+          <XlsxFileInput onRows={(rows) => load(rows, { kind: 'file' })} />
           <SheetLinkInput onRows={(rows, meta) => load(rows, { kind: 'sheet', ...meta }, meta.mapping)} />
           <Card>
             <h2 className="font-display text-[24px] font-bold">{t('import.vlozit')}</h2>

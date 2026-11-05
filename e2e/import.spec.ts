@@ -36,3 +36,17 @@ test('A7: vložená tabulka vytvoří trénink se správnými cviky, sériemi a 
   await page.getByRole('button', { name: 'Zpracovat' }).click();
   await expect(page.getByText('Neznámý cvik')).toHaveCount(0);
 });
+
+test('XLSX od trenéra: soubor z mailu dá celý trénink se superserií a poznámkou', async ({ page }) => {
+  await freshUser(page);
+  await page.goto('/import');
+  await page.getByLabel('Vybrat soubor').setInputFiles({ name: '1-Trénink 2.xlsx', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buffer: readFileSync('fixtures/trenink-2.xlsx') });
+
+  const rows = page.getByTestId('preview-row');
+  await expect(rows).toHaveCount(9);
+  await expect(page.getByRole('heading', { name: /Trénink A/ })).toContainText('1-Trénink 2');
+  await expect(rows.filter({ hasText: 'Pulldown' }).or(rows.filter({ hasText: 'pulldown' })).first()).toContainText('3 × 9–10 · 32,5 kg');
+  await expect(rows.filter({ hasText: /Superserie A/ })).toHaveCount(2);
+  await expect(page.getByText(/Nejasná buňka/)).toHaveCount(0);
+  await shot(page, 4, '10-import-xlsx');
+});

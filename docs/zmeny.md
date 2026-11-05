@@ -78,3 +78,17 @@ Opraveno: tep a kalorie ze Stravy se teď synchronizují na server. Počet v kni
 **Co potřebuju od tebe (souhrnně):** Supabase projekt, Google OAuth klient, Vercel účet napojený na repo, Strava aplikace,
 klíče VAPID a `TOKEN_ENCRYPTION_KEY` (postup v `docs/setup.md`). Dál kontrola české knihovny, 2–3 skutečné sheety jako CSV do `fixtures/`
 a test v posilovně na iPhonu.
+
+## Po fázi 4: skutečný soubor od trenéra (5. 11. 2026)
+
+**Hotové**
+- Trenér posílá tréninky jako **XLSX v mailu**. Import má novou první volbu „Soubor od trenéra (XLSX)“ (víc souborů = víc tréninků týdne). Soubor se čte přímo v telefonu, bez Google přihlášení.
+- Parser upravený podle `fixtures/trenink-2.xlsx`: název cviku ve sloučených buňkách, superserie A1/A2 ve vlastním sloupci, poznámka „35 kg na každé straně“, plank „2x1min“ = 2 × 60 s. Nadpis tréninku se nezdvojuje.
+
+**Ověření**
+- Vitest: čtečka XLSX (sloučené buňky, chybný soubor, A1 notace), celý trénink z trenérova souboru (9 cviků, superserie v jednom bloku, váhy, čas, poznámka, 0 nejasných buněk), dva soubory = Trénink A a B. Celkem 235 testů.
+- Playwright: nahrání souboru v importu → náhled 9 cviků, „3 × 9–10 · 32,5 kg“, dvakrát „Superserie A“. Celkem 15/15. Screenshot `docs/screenshots/faze-4/10-import-xlsx.png`.
+
+**Na tobě**
+- Anglické názvy cviků („Lat pulldown - menší nástavec“) poprvé spáruješ s knihovnou ťuknutím na návrh; appka si párování pamatuje (A3).
+- Pošli i Trénink 1, ať je parser ověřený na dvou souborech.

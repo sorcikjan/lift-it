@@ -280,6 +280,10 @@
   "import": {
     "nadpis": "Nový týden",
     "zpusoby": "Jak plán vložíš?",
+    "soubor": "Soubor od trenéra (XLSX)",
+    "souborNavod": "Přílohu z mailu ulož do Souborů a vyber ji tady. Víc tréninků najednou: vyber víc souborů.",
+    "vybratSoubor": "Vybrat soubor",
+    "chybaSoubor": "Soubor se nepodařilo přečíst. Je to tabulka XLSX?",
     "odkaz": "Odkaz na Google Sheet",
     "odkazPlaceholder": "https://docs.google.com/spreadsheets/…",
     "nacist": "Načíst sheet",
