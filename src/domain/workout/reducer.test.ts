@@ -295,3 +295,50 @@ describe('B14: superserie', () => {
     expect(s.done).toMatchObject({ 'pe-3': 3, 'pe-4': 3 });
   });
 });
+
+describe('Jedno ťuknutí na sérii (nový design)', () => {
+  const tap = (index = 0): RunAction => ({ type: 'tap', index, id: `t-${++n}`, at: '2026-11-09T18:00:00Z' });
+
+  it('z karty Na řadě zaloguje rovnou první sérii a skončí v pauze', () => {
+    const s = run(initRunState(plan), tap());
+    expect(s.done['pe-1']).toBe(1);
+    expect(s.log).toHaveLength(1);
+    expect(s.phase).toBe('rest');
+  });
+  it('z pauzy zaloguje další sérii; po poslední sérii cviku jde další cvik', () => {
+    const s = run(initRunState(plan), tap(), tap(), tap());
+    expect(s.done['pe-1']).toBe(3);
+    expect(s.phase).toBe('next');
+    expect(s.order[0]).toBe('pe-2');
+  });
+  it('Zpět vrátí celé ťuknutí jedním krokem', () => {
+    const s0 = run(initRunState(plan), tap());
+    const s1 = run(s0, tap(), { type: 'undo' });
+    expect(s1.done['pe-1']).toBe(1);
+    expect(s1.phase).toBe('rest');
+    expect(run(s0, { type: 'undo' }).phase).toBe('next');
+  });
+  it('v hlavní části index vybere jiný cvik a přeskočený se zařadí hned za něj', () => {
+    let s = initRunState(plan);
+    s = finishCurrent(finishCurrent(s));
+    const c = candidates(plan, s);
+    expect(c.length).toBeGreaterThan(1);
+    s = run(s, tap(1));
+    expect(s.order.slice(0, 2)).toEqual([c[1], c[0]]);
+    expect(s.done[c[1]]).toBe(1);
+  });
+  it('v úvodu index mimo kandidáty nic neudělá', () => {
+    const s0 = initRunState(plan);
+    expect(run(s0, tap(1))).toBe(s0);
+  });
+  it('rozpracovaná série (stav Cvičím po obnově) se jen zaloguje', () => {
+    const s = run(initRunState(plan), { type: 'go', index: 0 }, tap());
+    expect(s.done['pe-1']).toBe(1);
+  });
+  it('poslední ťuknutí tréninku vede na finished', () => {
+    let s = initRunState(plan);
+    for (let i = 0; i < 100 && s.phase !== 'finished'; i++) s = run(s, tap());
+    expect(s.phase).toBe('finished');
+    expect(s.log).toHaveLength(22);
+  });
+});

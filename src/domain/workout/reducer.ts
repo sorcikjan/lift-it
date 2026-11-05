@@ -5,6 +5,7 @@
  *   Na řadě (next) --go--> Cvičím (work) --logSet--> Vydýchej se (rest) --startSet--> Cvičím
  *   Po poslední sérii cviku logSet vede rovnou na další kartu Na řadě (bez pauzy).
  *   Po poslední sérii tréninku logSet vede na finished (shrnutí).
+ *   tap = go/startSet + logSet jedním ťuknutím (obrazovka tréninku od redesignu 11/2026).
  *
  * Čistá funkce: id a čas nové série přicházejí v akci, takže reducer nic negeneruje.
  * Stav je čisté JSON a ukládá se do IndexedDB po každé akci (B9).
@@ -39,6 +40,7 @@ export type RunAction =
   | { type: 'go'; index: number }
   | { type: 'logSet'; id: string; at: string }
   | { type: 'startSet' }
+  | { type: 'tap'; index: number; id: string; at: string }
   | { type: 'undo' }
   | { type: 'extraSet' };
 
@@ -159,6 +161,16 @@ export function reducer(plan: WorkoutView, s: RunState, a: RunAction): RunState 
         phase: order.length ? 'next' : 'finished',
         lastDone: id,
       });
+    }
+
+    case 'tap': {
+      // Nový design: jedno ťuknutí „Série N hotová“ = (výběr cviku | další série) + zápis série, jeden krok pro Zpět.
+      let x = s;
+      if (x.phase === 'next') x = reducer(plan, x, { type: 'go', index: a.index });
+      else if (x.phase === 'rest') x = reducer(plan, x, { type: 'startSet' });
+      if (x.phase !== 'work') return s;
+      x = reducer(plan, x, { type: 'logSet', id: a.id, at: a.at });
+      return { ...x, history: [...s.history, snapshot(s)].slice(-HISTORY_LIMIT) };
     }
 
     case 'startSet':
