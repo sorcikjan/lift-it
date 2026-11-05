@@ -111,3 +111,14 @@ a test v posilovně na iPhonu.
 **Oprava:** hlavní tlačítko je v kartě vždy připnuté dole; nadpis, velké číslo, obrázky a mezery se zmenšují podle výšky displeje, zbytek obsahu jde v kartě posunout. Dlouhé názvy (> 36 znaků) mají menší písmo.
 
 **Ověření:** nový e2e test `e2e/maly-displej.spec.ts` (375 × 667 a 390 × 763, trenérův trénink): v každém stavu je tlačítko celé vidět, leží uvnitř karty a na jeho středu je opravdu tlačítko. Celá sada 17/17, Vitest 242.
+
+## A1/A2 = úvod, ne superserie (5. 11. 2026)
+
+**Chyba:** první dva řádky trenérova souboru (A1 rotace s medicinbalem, A2 přetahování v lehu) se uložily jako superserie, takže trénink střídal A1 → A2 → A1. Trenér tím ale značí úvod: nejdřív obě série prvního cviku, pak druhého, a nepřeskakuje se.
+
+**Oprava:** označená skupina na začátku tréninku je úvod bez střídání (rozhodnutí 34). Plank na konci zůstává závěr, zbytek hlavní část.
+
+**Ověření:** Vitest na trenérově souboru: A1 a A2 mají blok úvod a žádnou skupinu, cviky 3–8 hlavní část. Celkem 242 testů.
+
+**Na tobě:** soubor nahraj znovu (už uložený týden má A1/A2 pořád jako superserii).
+

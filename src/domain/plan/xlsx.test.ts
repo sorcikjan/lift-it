@@ -26,7 +26,7 @@ describe('XLSX od trenéra', () => {
     expect(colIndex('AA1')).toBe(26);
   });
 
-  it('parser z něj udělá celý trénink: 9 cviků, superserie, čas a poznámka', async () => {
+  it('parser z něj udělá celý trénink: 9 cviků, úvod A1/A2, čas a poznámka', async () => {
     const rows = await filesToRows([{ name: '1-Trénink 2.xlsx', data: file }]);
     const draft = parseSheet(rows, guessMapping(rows));
     expect(draft.workouts).toHaveLength(1);
@@ -38,10 +38,9 @@ describe('XLSX od trenéra', () => {
       'Seated cable row - V adapter', 'Plank',
     ]);
     const by = (n: string) => w.exercises.find((e) => e.sourceName === n)!;
-    expect(by('Seated Thoracic Rotation with Medicine Ball').group).toBe('A');
-    expect(by('Lying Medicine Ball Pullover').group).toBe('A');
-    // Superserie zůstane v jednom bloku
-    expect(by('Lying Medicine Ball Pullover').blok).toBe(by('Seated Thoracic Rotation with Medicine Ball').blok);
+    // A1/A2 na začátku = úvod jeden po druhém, ne superserie (trenérova konvence)
+    expect(w.exercises.slice(0, 2).map((e) => [e.blok, e.group])).toEqual([['uvod', null], ['uvod', null]]);
+    expect(w.exercises.slice(2, 8).every((e) => e.blok === 'hlavni')).toBe(true);
     expect(by('Lat pulldown - menší nástavec').sets).toHaveLength(3);
     expect(by('Lat pulldown - menší nástavec').sets[0]).toMatchObject({ repsMin: 9, repsMax: 10, weightKg: 32.5 });
     expect(by('Leg press').sets[0].weightKg).toBe(70);

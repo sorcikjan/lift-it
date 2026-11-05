@@ -286,13 +286,19 @@ function parseRow(rawName: string, rawSets: string, rawReps: string, rawW: strin
 
 /**
  * Bez označení bloků: první a poslední cvik pevně, zbytek hlavní část [PŘEDPOKLAD z PRD].
+ * Skupina A1/A2… hned na začátku tréninku = úvod (pořadí podle plánu, bez střídání).
  * Částečně označený list: neoznačené cviky zdědí blok podle pozice.
  */
 export function assignBlocks(w: DraftWorkout): void {
   const ex = w.exercises;
   if (ex.every((e) => e.blok == null)) {
+    // Trenérova konvence: označené cviky na začátku tréninku (A1, A2…) jsou úvod jeden po druhém, ne superserie.
+    const lead = ex[0]?.group ? ex.findIndex((e) => e.group !== ex[0].group) : 0;
+    const uvod = lead === -1 ? 0 : lead;
+    ex.slice(0, uvod).forEach((e) => { e.blok = 'uvod'; e.group = null; });
     ex.forEach((e, i) => {
-      e.blok = ex.length >= 3 && i === 0 ? 'uvod' : ex.length >= 3 && i === ex.length - 1 ? 'zaver' : 'hlavni';
+      if (i < uvod) return;
+      e.blok = uvod === 0 && ex.length >= 3 && i === 0 ? 'uvod' : ex.length >= 3 && i === ex.length - 1 ? 'zaver' : 'hlavni';
     });
     // Superserie se nerozdělí mezi bloky: celá skupina dostane blok svého prvního cviku.
     ex.forEach((e, i) => {
