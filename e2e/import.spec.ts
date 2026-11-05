@@ -11,15 +11,17 @@ test('A7: vložená tabulka vytvoří trénink se správnými cviky, sériemi a 
 
   const rows = page.getByTestId('preview-row');
   await expect(rows).toHaveCount(12);
-  // Překlep „Legpres“ a „Brišáky“ nejsou jisté: nabídne návrh jedním ťuknutím
-  await expect(page.getByText('Neznámý cvik').first()).toBeVisible();
+  // Nejisté názvy appka rozhodne sama (odhad nebo nový cvik); změnit jde, ale nemusí se nic
+  await expect(page.getByText(/Odhad z knihovny|Uloží se jako nový cvik/).first()).toBeVisible();
   await shot(page, 1, '12-import-nahled');
   const save = page.getByRole('button', { name: 'Uložit týden' });
-  await expect(save).toBeDisabled();
-  while (await page.getByRole('button', { name: /^Myslíš / }).count()) {
-    await page.getByRole('button', { name: /^Myslíš / }).first().click();
-  }
   await expect(save).toBeEnabled();
+  // Ruční oprava jednoho odhadu se uloží jako alias
+  const legpres = rows.filter({ hasText: 'Legpres' });
+  await legpres.getByRole('button', { name: /Odhad z knihovny|Uloží se jako nový cvik/ }).click();
+  await legpres.getByRole('button', { name: 'Vybrat jiný cvik' }).click();
+  await page.getByRole('searchbox').or(page.getByRole('textbox', { name: /Hledat/ })).first().fill('Leg press');
+  await page.getByRole('button', { name: /^Leg press/i }).first().click();
   await save.click();
   await expect(page.getByText('Týden je uložený. Jdeme cvičit?')).toBeVisible();
 
@@ -34,7 +36,7 @@ test('A7: vložená tabulka vytvoří trénink se správnými cviky, sériemi a 
   await page.goto('/import');
   await page.getByRole('textbox', { name: 'Vložit zkopírovanou tabulku' }).fill('Legpres\t4x10\t40');
   await page.getByRole('button', { name: 'Zpracovat' }).click();
-  await expect(page.getByText('Neznámý cvik')).toHaveCount(0);
+  await expect(page.getByText(/Odhad z knihovny|Uloží se jako nový cvik/)).toHaveCount(0);
 });
 
 test('XLSX od trenéra: soubor z mailu dá celý trénink se superserií a poznámkou', async ({ page }) => {
@@ -49,4 +51,12 @@ test('XLSX od trenéra: soubor z mailu dá celý trénink se superserií a pozn�
   await expect(rows.filter({ hasText: /Superserie A/ })).toHaveCount(2);
   await expect(page.getByText(/Nejasná buňka/)).toHaveCount(0);
   await shot(page, 4, '10-import-xlsx');
+
+  // Bez jediného ťuknutí na párování jde rovnou uložit
+  await page.getByRole('button', { name: 'Uložit týden' }).click();
+  await expect(page.getByText('Týden je uložený. Jdeme cvičit?')).toBeVisible();
+  await page.goto('/');
+  for (const n of ['Seated Thoracic Rotation with Medicine Ball', 'Zakopávání na stroji', 'Shoulder press DB', 'Plank']) {
+    await expect(page.getByRole('listitem').filter({ hasText: n })).toBeVisible();
+  }
 });

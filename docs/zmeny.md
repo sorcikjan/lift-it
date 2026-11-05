@@ -92,3 +92,14 @@ a test v posilovně na iPhonu.
 **Na tobě**
 - Anglické názvy cviků („Lat pulldown - menší nástavec“) poprvé spáruješ s knihovnou ťuknutím na návrh; appka si párování pamatuje (A3).
 - Pošli i Trénink 1, ať je parser ověřený na dvou souborech.
+
+## Párování cviků bez ptaní (5. 11. 2026)
+
+**Hotové**
+- Import se na cviky neptá. Z trenérova souboru najde samo 7 z 9 cviků (např. „Zakopávání na stroji“ → zakopávání, „Shoulder press DB“ → tlaky na ramena s jednoručkami, „Seated cable row - V adapter“ → veslování na kladce). Dva cviky s medicinbalem, které knihovna nemá, se založí jako vlastní pod trenérovým názvem.
+- Odhady a nové cviky jsou v náhledu označené a jdou změnit jedním ťuknutím, ale nemusí.
+- Testy už nikdy nesáhnou na ostrou databázi: adresa je v `.env.seed.local` místo `.env.local`.
+
+**Ověření**
+- Vitest: jádro názvu, automatický výběr pro názvy od trenéra, slabá shoda se nehádá.
+- Playwright: XLSX od trenéra se uloží bez jediného ťuknutí na párování a na domově je všech 9 cviků.

@@ -8,7 +8,7 @@ import { matchExercise, type MatchIndex } from '@/domain/plan/match';
 import { fmtKg } from '@/domain/format';
 import { db } from '@/client/db';
 import { exerciseName } from '@/client/library';
-import { loadMatchIndex, resolveAll } from '@/client/importer';
+import { loadMatchIndex, previewMatch, resolveForSave } from '@/client/importer';
 import { mondayOf, reimportWeek, saveAlias, saveWeek } from '@/client/repo';
 import { SheetLinkInput } from '@/components/SheetLinkInput';
 import { XlsxFileInput } from '@/components/XlsxFileInput';
@@ -38,6 +38,7 @@ function Import() {
   const [index, setIndex] = useState<MatchIndex | null>(null);
   const [picks, setPicks] = useState<Record<string, string>>({});
   const [picking, setPicking] = useState<string | null>(null);
+  const [changing, setChanging] = useState<string | null>(null);
   const [weekStart, setWeekStart] = useState(mondayOf());
   const [done, setDone] = useState<string | null>(null);
   const created = params.get('created');
@@ -70,14 +71,14 @@ function Import() {
   const pick = async (key: string, sourceName: string, exerciseId: string) => {
     setPicks((p) => ({ ...p, [key]: exerciseId }));
     setPicking(null);
+    setChanging(null);
     await saveAlias(sourceName, exerciseId); // A3: potvrzení se uloží jako alias
     setIndex(await loadMatchIndex());
   };
 
   const save = async () => {
     if (!draft || !index || !source) return;
-    const resolved = resolveAll(draft.workouts, index, picks);
-    if (!resolved) return;
+    const resolved = await resolveForSave(draft.workouts, index, picks);
     if (source.spreadsheetId && mapping) await saveMappingFor(source.spreadsheetId, mapping);
     if (history) {
       const { saveBaselineWeek } = await import('@/client/baseline');
@@ -104,7 +105,6 @@ function Import() {
     );
   }
 
-  const allResolved = !!(draft && index && resolveAll(draft.workouts, index, picks));
   return (
     <Page>
       <PageTitle title={history ? t('import.historie') : t('import.nadpis')} back="/" sub={history ? t('import.historieText') : undefined} />
@@ -157,24 +157,29 @@ function Import() {
                 {w.exercises.map((e, ei) => {
                   const key = `${wi}:${ei}`;
                   const m = matchExercise(index, e.sourceName);
-                  const id = picks[key] ?? m.exerciseId;
+                  const { exerciseId: id, how } = previewMatch(index, e.sourceName, picks[key]);
                   const ex = id ? exById.get(id) : undefined;
+                  const open = changing === key;
                   return (
-                    <li key={key} data-testid="preview-row" className={`rounded-[18px] p-3 ${!id || e.issues.length ? 'bg-zluta/15 ring-2 ring-zluta' : 'bg-grafit'}`}>
+                    <li key={key} data-testid="preview-row" className={`rounded-[18px] p-3 ${e.issues.length ? 'bg-zluta/15 ring-2 ring-zluta' : 'bg-grafit'}`}>
                       <div className="flex items-baseline justify-between gap-2">
                         <p className="min-w-0 truncate text-[18px] font-semibold">{ex ? exerciseName(ex) : e.sourceName}</p>
                         <span className="flex-none text-[13px] text-ocel">{t(`blok.${e.blok ?? 'hlavni'}`)}{e.group ? ` · ${t('run.superserie', { group: e.group })}` : ''}</span>
                       </div>
                       {ex && normalizeEq(exerciseName(ex), e.sourceName) === false && <p className="text-[14px] text-ocel">„{e.sourceName}“</p>}
+                      {(how === 'odhad' || how === 'novy') && (
+                        <button type="button" onClick={() => setChanging(open ? null : key)} aria-expanded={open} className="mt-1 text-left text-[14px] text-ocel underline underline-offset-2">
+                          {how === 'odhad' ? t('import.odhad') : t('import.novyCvik')}
+                        </button>
+                      )}
                       <p className="font-display text-[19px] font-semibold tabular">{e.sets.length} × {e.sets[0].timeS != null ? `${e.sets[0].timeS} s` : e.sets[0].toFailure ? t('common.max') : e.sets[0].repsMin !== e.sets[0].repsMax ? `${e.sets[0].repsMin}–${e.sets[0].repsMax}` : e.sets[0].repsMax ?? '?'}
                         {e.sets.some((s) => s.weightKg) ? ` · ${[...new Set(e.sets.map((s) => s.weightKg).filter((x) => x != null))].map((x) => fmtKg(x!)).join('/')} kg` : ''}</p>
                       {e.issues.map((iss, k) => <p key={k} className="text-[15px] text-zluta">{t('import.nejasne', { raw: iss.raw })}</p>)}
-                      {!id && (
+                      {open && (
                         <div className="mt-2 flex flex-col gap-2">
-                          <p className="text-[15px] font-semibold text-zluta">{t('import.neznamy')}</p>
                           {m.suggestions.map((s) => (
                             <button key={s.exerciseId} type="button" onClick={() => pick(key, e.sourceName, s.exerciseId)}
-                              className="tap rounded-2xl bg-modra-akce px-4 text-left text-[17px] font-semibold">{t('import.navrh', { name: exerciseName(exById.get(s.exerciseId)) })}</button>
+                              className="tap rounded-2xl border border-linka px-4 text-left text-[17px]">{t('import.navrh', { name: exerciseName(exById.get(s.exerciseId)) })}</button>
                           ))}
                           <div className="flex gap-2">
                             <button type="button" onClick={() => setPicking(picking === key ? null : key)} className="tap flex-1 rounded-2xl border border-linka text-[15px]">{t('import.vybratJiny')}</button>
@@ -196,7 +201,7 @@ function Import() {
           <FormField label={history ? t('import.historieDatum') : t('import.tydenOd')}>
             <input type="date" value={weekStart} onChange={(e) => setWeekStart(e.target.value)} className={inputCls} />
           </FormField>
-          <Button big className="mt-4" disabled={!allResolved || !draft.workouts.length} onClick={save}>
+          <Button big className="mt-4" disabled={!draft.workouts.length} onClick={save}>
             <Check size={28} />{history ? t('import.historieUlozit') : t('import.ulozitTyden')}
           </Button>
         </>

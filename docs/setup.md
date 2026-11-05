@@ -12,6 +12,9 @@ Hodnoty ukládej do Vercelu (Settings → Environment Variables), **nikdy do git
 3. **Settings → API:** zkopíruj `Project URL` → `NEXT_PUBLIC_SUPABASE_URL` a `anon public` klíč → `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 4. **Settings → Database → Connection string → Transaction pooler** (port 6543): zkopíruj URI, doplň heslo → `DATABASE_URL`.
 5. Naplň knihovnu cviků (jednou, z počítače): `DATABASE_URL='…' pnpm seed:exercises`.
+   Adresu produkční databáze drž lokálně jen v `.env.seed.local` (git ho ignoruje a Next.js ho nenačítá),
+   **nikdy v `.env.local`**: ten si načte i `pnpm start` a e2e testy by pak mířily na ostrou databázi.
+   Použití: `set -a; . ./.env.seed.local; set +a; pnpm seed:exercises`.
 6. **Authentication → URL Configuration:** Site URL = adresa z Vercelu (např. `https://lift-it.vercel.app`),
    Redirect URLs přidej `https://lift-it.vercel.app/**` a `http://localhost:3000/**`.
 7. **Authentication → Providers → Google:** zapni, vlož Client ID a Secret z kroku 2.6. Zkopíruj odtud *Callback URL*
