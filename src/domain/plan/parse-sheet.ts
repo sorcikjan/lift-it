@@ -72,10 +72,14 @@ export function headerField(cell: string): Field | null {
 const DAYS = ['pondeli', 'utery', 'streda', 'ctvrtek', 'patek', 'sobota', 'nedele'];
 
 /** „Trénink A“, „TRENINK B – nohy“, „Středa“ → nadpis tréninku. */
-export function workoutHeading(cell: string): { label: string | null; title: string } | null {
+export function workoutHeading(cell: string): { label: string | null; title: string | null } | null {
   const n = normalizeName(cell);
   const m = n.match(/^(?:trenink|trening|workout|den)\s*([a-z0-9])\b/);
-  if (m) return { label: m[1].toUpperCase(), title: cell.trim() };
+  if (m) {
+    // „Trénink A – nohy“ → nadpis „nohy“ (štítek A se ukazuje zvlášť)
+    const rest = cell.trim().replace(/^\S+\s*[A-Za-z0-9]\b\s*[-–—:.]?\s*/, '').trim();
+    return { label: m[1].toUpperCase(), title: rest || null };
+  }
   if (DAYS.some((d) => n === d || n.startsWith(d + ' '))) return { label: null, title: cell.trim() };
   return null;
 }
@@ -153,6 +157,8 @@ export function parseRest(raw: string): number | null | undefined {
   return undefined;
 }
 
+const GROUP_ONLY = /^[A-Z][1-9][.):]?$/;
+
 /** „A1 Leg press“, „A2. Zakopávání“ → superserie A. */
 export function splitGroup(name: string): { group: string | null; name: string } {
   const m = name.trim().match(/^([A-Z])\s?([1-9])[.):]?\s+(.+)$/);
@@ -171,6 +177,9 @@ export function parseSheet(rows: string[][], mapping: SheetMapping): PlanWeekDra
   const cNote = col('note');
   const [cWorkout] = col('workout');
   const [cBlok] = col('blok');
+
+  const textColsRight = (from: number) => Object.entries(mapping.columns)
+    .filter(([k, v]) => Number(k) > from && (v === 'note' || v === 'ignore')).map(([k]) => Number(k)).sort((a, b) => a - b);
 
   const workouts: DraftWorkout[] = [];
   let current: DraftWorkout | null = null;
@@ -205,8 +214,15 @@ export function parseSheet(rows: string[][], mapping: SheetMapping): PlanWeekDra
       if (b) { blok = b; return; }
     }
 
-    const rawName = cell(cEx);
+    let rawName = cell(cEx);
     if (!rawName) return;
+    // Označení superserie ve vlastním sloupci („A1“ | „Tlak na prsa“): název je v nejbližší textové buňce vpravo.
+    let nameCol: number | null = null;
+    if (GROUP_ONLY.test(rawName)) {
+      nameCol = textColsRight(cEx).find((c) => cell(c)) ?? null;
+      if (nameCol == null) return;
+      rawName = `${rawName.replace(/[.):]$/, '')} ${cell(nameCol)}`;
+    }
     if (headerField(rawName) === 'exercise') return; // opakovaná hlavička uvnitř listu
     const h = workoutHeading(rawName);
     if (h && !cell(cSets) && !cell(cReps)) { startWorkout(h.label, h.title); return; }
@@ -216,7 +232,7 @@ export function parseSheet(rows: string[][], mapping: SheetMapping): PlanWeekDra
     if (!current) startWorkout(null, null);
     const ex = parseRow(rawName, cell(cSets), cell(cReps), cell(cW), cell(cRest), i);
     ex.blok = cBlok != null && cell(cBlok) ? blokHeading(cell(cBlok)) ?? blok : blok;
-    ex.note = cNote.map((c) => cell(c)).filter(Boolean).join(' · ') || null;
+    ex.note = cNote.filter((c) => c !== nameCol).map((c) => cell(c).replace(/^\((.*)\)$/, '$1').trim()).filter(Boolean).join(' · ') || null;
     current!.exercises.push(ex);
   });
 
@@ -278,6 +294,11 @@ export function assignBlocks(w: DraftWorkout): void {
     ex.forEach((e, i) => {
       e.blok = ex.length >= 3 && i === 0 ? 'uvod' : ex.length >= 3 && i === ex.length - 1 ? 'zaver' : 'hlavni';
     });
+    // Superserie se nerozdělí mezi bloky: celá skupina dostane blok svého prvního cviku.
+    ex.forEach((e, i) => {
+      const prev = ex[i - 1];
+      if (e.group && prev?.group === e.group) e.blok = prev.blok;
+    });
     return;
   }
   ex.forEach((e) => { if (e.blok == null) e.blok = 'hlavni'; });
@@ -302,21 +323,29 @@ export function guessMapping(rows: string[][]): SheetMapping {
     return vals.length ? vals.filter(test).length / vals.length : 0;
   };
   const taken = new Set<Field>();
-  const pick = (f: Field, test: (s: string) => boolean, min = 0.5) => {
-    let best = -1, bestScore = min;
+  const count = (c: number, test: (s: string) => boolean) => rows.filter((r) => r[c] && test(r[c])).length;
+  const pick = (f: Field, test: (s: string) => boolean, min = 0.5, byCount = false) => {
+    let best = -1, bestScore = min, bestCount = 0;
     for (let c = 0; c < width; c++) {
       if (columns[c]) continue;
       const s = score(c, test);
-      if (s > bestScore) { best = c; bestScore = s; }
+      if (s <= min) continue;
+      const n = count(c, test);
+      // Cviky: vyhraje sloupec s nejvíc názvy (u sloučených buněk stojí pár názvů i ve vedlejším sloupci)
+      if (byCount ? n > bestCount || (n === bestCount && s > bestScore) : s > bestScore) { best = c; bestScore = s; bestCount = n; }
     }
     if (best >= 0) { columns[best] = f; taken.add(f); }
   };
-  pick('exercise', (s) => /[a-zá-ž]{3,}/i.test(s) && !parseSetsReps(s) && parseWeight(s) === undefined, 0.4);
+  const isName = (s: string) => /[a-zá-ž]{3,}/i.test(s) && !parseSetsReps(s) && parseWeight(s) === undefined;
+  pick('exercise', isName, 0.4, true);
   pick('sets', (s) => !!parseSetsReps(s), 0.5);
   const combined = taken.has('sets'); // „3x10“: série i opakování v jednom sloupci
   if (!combined) pick('sets', (s) => /^\d$/.test(s.trim()), 0.6);
   if (!combined) pick('reps', (s) => !!parseReps(s) && !/kg/i.test(s), 0.6);
   pick('weight', (s) => /kg|,\d|\d\/\d|^bw$/i.test(s) || (parseWeight(s) !== undefined && Number(parseCzNumber(s)) > 4), 0.5);
+  // Zbylé textové sloupce vpravo od cviků jsou poznámky trenéra („35 kg na každé straně“).
+  const exCol = Number(Object.keys(columns).find((k) => columns[Number(k)] === 'exercise') ?? -1);
+  for (let c = exCol + 1; c < width && exCol >= 0; c++) if (!columns[c] && count(c, (s) => /[a-zá-ž]{2,}/i.test(s)) > 0) columns[c] = 'note';
   for (let c = 0; c < width; c++) if (!columns[c]) columns[c] = 'ignore';
   return { headerRow: null, columns };
 }
