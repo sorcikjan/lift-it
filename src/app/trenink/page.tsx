@@ -113,12 +113,13 @@ function NextCard({ c, single, onGo, extra, onExtra }: { c: CardView; single: bo
   const tagCls = c.tagKind === 'alt' ? 'bg-zluta text-guma' : 'bg-guma text-krida';
   return (
     <article data-testid="card-next" aria-label={c.name}
-      className={`snap-start-card flex flex-none flex-col rounded-[28px] bg-krida p-[18px] text-guma ${single ? 'w-[calc(100%-16px)]' : 'w-[326px] max-w-[calc(100vw-48px)]'}`}>
+      className={`snap-start-card flex min-h-0 flex-none flex-col overflow-hidden rounded-[28px] bg-krida p-[18px] text-guma ${single ? 'w-[calc(100%-16px)]' : 'w-[326px] max-w-[calc(100vw-48px)]'}`}>
       <div className="flex items-center justify-between gap-2">
         <span className={`flex h-[30px] items-center rounded-[15px] px-3 font-display text-[17px] font-bold ${tagCls}`}>{c.tag}</span>
         <span className="font-display text-[17px] font-semibold text-[#5A636B]">{c.blockLabel}</span>
       </div>
-      <h1 className="mt-4 font-display font-bold leading-none" style={{ fontSize: c.nameSize }}>{c.name}</h1>
+      <div className="card-body">
+      <h1 className="mt-4 font-display font-bold leading-none" style={{ fontSize: `min(${c.nameSize}px, ${c.nameSize / 9}dvh)` }}>{c.name}</h1>
       <ExerciseImages images={c.images} name={c.name} />
       <p className="mt-4 font-display text-[30px] font-bold tabular">{c.plan}</p>
       <p className="mt-2.5 text-[16px] leading-snug text-[#3A4148]">{c.hint}</p>
@@ -128,8 +129,9 @@ function NextCard({ c, single, onGo, extra, onExtra }: { c: CardView; single: bo
           <Plus size={18} />{t('run.jesteSerie', { name: extra })}
         </button>
       )}
+      </div>
       <button type="button" onClick={onGo}
-        className="mt-auto flex h-[84px] w-full flex-none items-center justify-center gap-3 rounded-[20px] bg-modra-akce font-display text-[32px] font-bold text-krida">
+        className="card-cta flex w-full flex-none items-center justify-center gap-3 rounded-[20px] bg-modra-akce font-display text-[32px] font-bold text-krida">
         <Play size={26} />{t('run.jduNaTo')}
       </button>
     </article>
@@ -154,23 +156,25 @@ function WorkCard({ v, onLog }: { v: ScreenView; onLog: () => void }) {
   const e = v.current!;
   const bigSize = v.big.length > 3 ? 120 : 200;
   return (
-    <article data-testid="card-work" className="mx-4 mt-1 flex min-h-0 flex-1 flex-col rounded-[28px] bg-modra-karta p-[18px] text-krida">
+    <article data-testid="card-work" className="mx-4 mt-1 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] bg-modra-karta p-[18px] text-krida">
       <div className="flex items-center justify-between gap-2">
         <span className="flex h-[30px] items-center rounded-[15px] bg-krida/20 px-3 font-display text-[17px] font-bold">{t('run.cvicim')}</span>
         <Dots dots={v.dots} label={v.dotsLabel} tone="blue" />
       </div>
-      <p className="mt-4 font-display text-[24px] font-semibold text-modra-svetla">{e.name}</p>
+      <div className="card-body">
+      <p className="mt-4 font-display text-[24px] font-semibold leading-tight text-modra-svetla">{e.name}</p>
       <p className="mt-0.5 font-display text-[34px] font-bold tabular">{t('run.serieXzeY', { n: v.setNo, total: v.setTotal })}</p>
       <p aria-label={v.targetAria} className="mt-3.5 flex items-baseline gap-1.5 whitespace-nowrap font-display leading-[0.85] tabular">
-        <span className="font-bold tracking-[-4px]" style={{ fontSize: bigSize }}>{v.big}</span>
+        <span className="font-bold tracking-[-4px]" style={{ fontSize: `min(${bigSize}px, ${bigSize / 8.5}dvh)` }}>{v.big}</span>
         <span className="text-[64px] font-semibold text-modra-svetla">{v.bigUnit}</span>
       </p>
       <p className="mt-2.5 font-display text-[32px] font-bold tabular">{v.weightLine}</p>
       <Plates kg={v.barWeight} className="mt-1.5 text-modra-svetla" />
       <p className="mt-4 text-[19px] font-medium">{v.cheer}</p>
       {v.supersetNext && <p className="mt-1 text-[16px] text-modra-svetla">{t('run.superserieDalsi', { name: v.supersetNext })}</p>}
+      </div>
       <button type="button" onClick={onLog} data-testid="log-set"
-        className="mt-auto flex h-[84px] w-full flex-none items-center justify-center gap-3 rounded-[20px] bg-splneno font-display text-[32px] font-bold text-guma">
+        className="card-cta flex w-full flex-none items-center justify-center gap-3 rounded-[20px] bg-splneno font-display text-[32px] font-bold text-guma">
         <Check size={28} />{v.ctaLabel}
       </button>
     </article>
@@ -186,18 +190,19 @@ function RestCard({ v, sessionId, onNext }: { v: ScreenView; sessionId: string; 
       .then((ns) => setNote(ns.find((n) => n.exercise_id === e.exerciseId && !n.archived)?.text ?? ''));
   }, [sessionId, e.exerciseId]);
   return (
-    <article data-testid="card-rest" className="mx-4 mt-1 flex min-h-0 flex-1 flex-col rounded-[28px] bg-zluta p-[18px] text-guma">
+    <article data-testid="card-rest" className="mx-4 mt-1 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] bg-zluta p-[18px] text-guma">
       <div className="flex items-center justify-between gap-2">
         <span className="flex h-[30px] items-center rounded-[15px] bg-guma px-3 font-display text-[17px] font-bold text-zluta">{t('run.vydychejSe')}</span>
         <Dots dots={v.dots} label={v.dotsLabel} tone="yellow" />
       </div>
-      <p className="mt-4 font-display text-[24px] font-semibold text-zluta-tmava">{e.name}</p>
+      <div className="card-body">
+      <p className="mt-4 font-display text-[24px] font-semibold leading-tight text-zluta-tmava">{e.name}</p>
       <div className="mt-2.5 flex items-center gap-3.5">
         <span className="flex h-16 w-16 flex-none items-center justify-center rounded-full border-[3px] border-guma bg-splneno text-guma"><Check size={34} /></span>
-        <h1 className="font-display text-[52px] font-bold leading-[0.95]">{v.restTitle}</h1>
+        <h1 className="font-display font-bold leading-[0.95]" style={{ fontSize: 'min(52px, 6.2dvh)' }}>{v.restTitle}</h1>
       </div>
       <p className="mt-3.5 text-[20px] font-medium leading-snug text-[#2A2209]">{v.restLine}</p>
-      <div className="mt-6 rounded-[18px] bg-guma/10 p-4">
+      <div className="mt-[min(24px,2.5dvh)] rounded-[18px] bg-guma/10 p-4">
         <p className="text-[15px] font-semibold text-zluta-tmava">{v.nextSetLabel}</p>
         <p className="mt-1 font-display text-[40px] font-bold tabular">{v.nextSet}</p>
         <Plates kg={v.barWeight} className="mt-1 text-zluta-tmava" />
@@ -211,8 +216,9 @@ function RestCard({ v, sessionId, onNext }: { v: ScreenView; sessionId: string; 
           {note ? `${t('run.poznamka')}: ${note}` : t('run.poznamka')}
         </button>
       )}
+      </div>
       <button type="button" onClick={onNext}
-        className="mt-auto flex h-[84px] w-full flex-none items-center justify-center gap-3 rounded-[20px] bg-guma font-display text-[32px] font-bold text-krida">
+        className="card-cta flex w-full flex-none items-center justify-center gap-3 rounded-[20px] bg-guma font-display text-[32px] font-bold text-krida">
         <Play size={26} />{t('run.jduNaDalsiSerii')}
       </button>
     </article>

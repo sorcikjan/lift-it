@@ -6,7 +6,7 @@ import { t } from '@/i18n/t';
 export function ExerciseImages({ images, name, tall }: { images: string[]; name: string; tall?: boolean }) {
   const [failed, setFailed] = useState<Record<number, boolean>>({});
   const shown = images.slice(0, 2);
-  const h = tall ? 'h-[180px]' : 'h-[108px]';
+  const h = tall ? 'h-[180px]' : 'h-[min(108px,12dvh)]';
   return (
     <div className="mt-4 rounded-[18px] bg-guma p-3">
       {shown.length && !shown.every((_, i) => failed[i]) ? (

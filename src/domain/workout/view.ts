@@ -97,7 +97,7 @@ export interface ScreenView {
   supersetNext: string | null;
 }
 
-const nameSize = (name: string) => (name.length > 22 ? 34 : name.length > 12 ? 42 : 52);
+const nameSize = (name: string) => (name.length > 36 ? 30 : name.length > 22 ? 34 : name.length > 12 ? 42 : 52);
 
 export function deriveView(plan: WorkoutView, s: RunState): ScreenView {
   const E = new Map(plan.exercises.map((e) => [e.id, e]));

@@ -31,6 +31,11 @@ html, body {
 .snap-row::-webkit-scrollbar { display: none; }
 .snap-start-card { scroll-snap-align: start; }
 
+/* Karta tréninku: obsah se přizpůsobí výšce displeje (a v nouzi posune), hlavní tlačítko je vždy vidět dole. */
+.card-body { min-height: 0; flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; display: flex; flex-direction: column; }
+.card-body::-webkit-scrollbar { display: none; }
+.card-cta { flex: none; margin-top: 12px; height: clamp(64px, 10dvh, 84px); }
+
 /* Dotykové plochy ≥ 56 px */
 .tap { min-height: 56px; min-width: 56px; }
 
