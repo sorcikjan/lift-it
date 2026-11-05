@@ -67,16 +67,40 @@ export function buildMatchIndex(input: MatchIndexInput): MatchIndex {
   return { exact, ownAlias, globalAlias, entries };
 }
 
-export function matchExercise(index: MatchIndex, raw: string, limit = 3): MatchResult {
-  const n = normalizeName(raw);
-  if (!n) return { kind: 'none', exerciseId: null, suggestions: [] };
-  const own = index.ownAlias.get(n);
-  if (own) return { kind: 'alias', exerciseId: own, suggestions: [] };
-  const ex = index.exact.get(n);
-  if (ex) return { kind: 'exact', exerciseId: ex, suggestions: [] };
-  const al = index.globalAlias.get(n);
-  if (al) return { kind: 'alias', exerciseId: al, suggestions: [] };
+const ABBR: Record<string, string> = { db: 'dumbbell', kb: 'kettlebell', bb: 'barbell', jr: 'jednoruckami', tc: 'trx' };
+const STOP = new Set(['na', 's', 'se', 'v', 've', 'z', 'ze', 'do', 'pro', 'a', 'with', 'on', 'the', 'an', 'of', 'stroji', 'stroj', 'stroje']);
 
+/**
+ * Jádro názvu pro párování: bez poznámky za pomlčkou nebo v závorce („Lat pulldown - menší nástavec“ → „lat pulldown“),
+ * zkratky rozepsané (DB → dumbbell), bez obecných slov („Zakopávání na stroji“ → „zakopavani“).
+ */
+export function coreName(raw: string): string {
+  const head = raw.split(/\s[-–—]\s|\(/)[0];
+  return normalizeName(head).split(' ').map((t) => ABBR[t] ?? t).filter((t) => t && !STOP.has(t)).join(' ');
+}
+
+/** Od tohoto skóre se odhad bere sám, bez potvrzení. */
+export const AUTO_SCORE = 0.72;
+
+/** Cvik, který import použije bez ptaní: jistá shoda, nebo dost dobrý odhad. null = založí se vlastní cvik. */
+export function autoPick(m: MatchResult): string | null {
+  return m.exerciseId ?? (m.suggestions[0] && m.suggestions[0].score >= AUTO_SCORE ? m.suggestions[0].exerciseId : null);
+}
+
+export function matchExercise(index: MatchIndex, raw: string, limit = 3): MatchResult {
+  const full = normalizeName(raw);
+  if (!full) return { kind: 'none', exerciseId: null, suggestions: [] };
+  const core = coreName(raw);
+  for (const n of core && core !== full ? [full, core] : [full]) {
+    const own = index.ownAlias.get(n);
+    if (own) return { kind: 'alias', exerciseId: own, suggestions: [] };
+    const ex = index.exact.get(n);
+    if (ex) return { kind: 'exact', exerciseId: ex, suggestions: [] };
+    const al = index.globalAlias.get(n);
+    if (al) return { kind: 'alias', exerciseId: al, suggestions: [] };
+  }
+
+  const n = core || full;
   const q = bigrams(n);
   const qTokens = new Set(n.split(' '));
   const best = new Map<string, number>();

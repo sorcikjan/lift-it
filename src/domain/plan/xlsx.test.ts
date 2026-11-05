@@ -58,3 +58,27 @@ describe('XLSX od trenéra', () => {
     expect(draft.workouts.every((w) => w.exercises.length === 9)).toBe(true);
   });
 });
+
+describe('Párování bez ptaní (názvy od trenéra)', async () => {
+  const { buildMatchIndex, matchExercise, autoPick, coreName } = await import('./match');
+  const lib = JSON.parse(readFileSync(path.join(__dirname, '../../../public/library/exercises.json'), 'utf8'));
+  const index = buildMatchIndex(lib);
+  const pick = (n: string) => autoPick(matchExercise(index, n));
+
+  it('jádro názvu: bez poznámky za pomlčkou, zkratky, bez obecných slov', () => {
+    expect(coreName('Lat pulldown - menší nástavec')).toBe('lat pulldown');
+    expect(coreName('Shoulder press DB')).toBe('shoulder press dumbbell');
+    expect(coreName('Zakopávání na stroji')).toBe('zakopavani');
+  });
+  it.each([
+    ['Zakopávání na stroji', 'Lying_Leg_Curls'],
+    ['Shoulder press DB', 'Dumbbell_Shoulder_Press'],
+    ['Seated cable row - V adapter', 'Seated_Cable_Rows'],
+    ['Leg press', 'Leg_Press'],
+    ['Plank', 'Plank'],
+  ])('„%s“ → %s', (n, id) => expect(pick(n)).toBe(id));
+  it('slabá shoda se nehádá (založí se vlastní cvik)', () => {
+    expect(pick('Seated Thoracic Rotation with Medicine Ball')).toBeNull();
+    expect(pick('Lying Medicine Ball Pullover')).toBeNull();
+  });
+});
