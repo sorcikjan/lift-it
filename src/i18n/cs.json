@@ -104,7 +104,24 @@
     "superserie": "Superserie {group}",
     "superserieDalsi": "Hned potom: {name}",
     "hlavickaPrefix": "Trénink {label} · cvik ",
-    "hlavickaSuffix": " ze {total}"
+    "hlavickaSuffix": " ze {total}",
+    "serieNHotova": "Série {n} hotová",
+    "pakHned": "pak hned {name}",
+    "posledniSerieCviku": "poslední série cviku",
+    "posledniSerieTreninku": "poslední série tréninku",
+    "zbyva": "zbývá ještě {n} {serie}",
+    "minule": "Minule",
+    "dnesPlus": "dnes {diff}",
+    "poprve": "Poprvé · dej si na čas",
+    "video": "Video",
+    "videoAria": "Video s ukázkou cviku {name}",
+    "dal": "Dál",
+    "hotoveCviky": "Hotové",
+    "serieCount": "{done}/{total}",
+    "serieCountAria": "Hotovo {done} ze {total} sérií",
+    "vybratCvik": "Cvičit teď {name}",
+    "displejSviti": "Displej svítí",
+    "displejZhasne": "Může zhasnout"
   },
   "texty": {
     "start": "Převlečený? Tak jdeme na to!",
@@ -123,7 +140,8 @@
     "pauza3": "Pěkně ti to jde.",
     "pauzaText": "Dej si tolik času, kolik potřebuješ. Až budeš chtít, jdeme dál.",
     "cvikHotovy": "{name} máš v kapse!",
-    "konec": "Hotovo, trénink je tvůj!"
+    "konec": "Hotovo, trénink je tvůj!",
+    "naRadeVyber": "Obsazeno? Ťukni níž na jiný cvik, k tomuhle se vrátíme."
   },
   "summary": {
     "hotovy": "Trénink {label} hotový",
