@@ -16,7 +16,7 @@ for (const viewport of [{ width: 375, height: 667 }, { width: 390, height: 763 }
       await page.goto('/');
       await page.getByRole('button', { name: 'Začít trénink' }).click();
 
-      for (const name of [/Jdu na to/, /Série hotová/, /Série hotová/, /Jdu na další sérii/]) {
+      for (const name of [/Jdu na to/, /Série hotová/, /Jdu na další sérii/, /Série i cvik hotový/]) {
         const cta = page.getByRole('button', { name });
         await expect(cta).toBeInViewport({ ratio: 1 });
         // Tlačítko leží celé uvnitř karty (žádný obsah přes něj nepřetéká)
