@@ -29,4 +29,11 @@ test('B8: displej drží po celý trénink a zámek se znovu vyžádá po návra
   await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
   await expect(page.getByTestId('wake')).toHaveAttribute('data-held', 'true');
   expect(await page.evaluate(() => (window as unknown as { __wl: { requests: number } }).__wl.requests)).toBeGreaterThanOrEqual(2);
+
+  // Safari zámek tiše pustí i bez odchodu z appky: první ťuknutí na obrazovku si ho vyžádá znovu
+  await page.evaluate(() => (window as unknown as { __wl: { sentinel: { release(): Promise<void> } } }).__wl.sentinel.release());
+  await expect(page.getByTestId('wake')).toHaveAttribute('data-held', 'false');
+  await page.getByRole('heading', { level: 1 }).click();
+  await expect(page.getByTestId('wake')).toHaveAttribute('data-held', 'true');
+  await expect(page.getByText('Displej svítí')).toBeVisible();
 });

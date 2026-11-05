@@ -122,3 +122,19 @@ a test v posilovně na iPhonu.
 
 **Na tobě:** soubor nahraj znovu (už uložený týden má A1/A2 pořád jako superserii).
 
+## Redesign podle prototypu v2 (5. 11. 2026, větev `redesign`)
+
+**Hotové**
+- **Trénink jako jeden seznam.** Aktuální cvik je rozsvícená karta s animovanou postavou, cílem (8× na 35 kg), kotouči, „Minule 30 kg × 10 · dnes +2,5 kg“, pruhy sérií a jedním tlačítkem „Série 1 hotová“ (pod ním „zbývá ještě 2 série“ / „poslední série cviku“ / „pak hned A2“). Po ťuknutí tlačítko zezelená, rozletí se konfety, na kartě se objeví „Série 1 je doma.“ Hotové cviky jsou nahoře odškrtnuté, další pod kartou; v hlavní části jde ťuknutím na řádek cvičit jiný cvik (obsazený stroj).
+- **Minule:** nejtěžší série cviku z posledního odcvičeného tréninku (i z historie).
+- **Displej:** zámek se vyžádá znovu při každém ťuknutí; nahoře „Displej svítí“ / „Může zhasnout“.
+- **Domov:** pozdrav, karta dnešního tréninku s postavou, štítky (cviky, série, minuty), první tři cviky + „+ N dalších“, Začít trénink se zářícím tlačítkem, stav týdne.
+- **Vstup** pro nového uživatele s claimem a přihlášením Googlem.
+- **Profil:** avatar, „Cvičí od listopadu 2026“, týden po–ne, tréninky / série / tento týden, Strava (i před nastavením), trenér, displej, historie, export, odhlášení.
+- **Shrnutí:** kroužek s odškrtnutím se obtočí.
+- Nové barvy a pohyb v celé appce (rozhodnutí 35–40).
+
+**Ověření**
+- Vitest: akce `tap` (7), seznam tréninku (6), Minule (3), postavy (15), profil (2). Celkem 277.
+- Playwright: celý trénink jedním ťuknutím na sérii, výběr jiného cviku v hlavní části, obnova po reloadu, Zpět, Minule z historie, superserie, kotouče, malé displeje (tlačítko celé vidět, hlavička se nezalomí), zámek displeje po ťuknutí, vstup, profil. Screenshoty `docs/screenshots/faze-5/`.
+

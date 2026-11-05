@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { doExercise, fillStable, freshUser, loadSample, press, shot, stats } from './helpers';
+import { doExercise, fillStable, freshUser, loadSample, press, shot, stats, showAllExercises } from './helpers';
 
 const URL = 'https://docs.google.com/spreadsheets/d/mock-tyden-hlavicka/edit#gid=0';
 
@@ -55,6 +55,7 @@ B,Dřep s osou,5,5,50,2:00,`;
   await expect(page.getByRole('listitem').filter({ hasText: 'Dřep s osou' })).toContainText('50 kg');
   await weekButtons.nth(0).click();
   await expect(page.getByRole('heading', { name: 'Trénink A' })).toBeVisible();
+  await showAllExercises(page);
   await expect(page.getByRole('listitem').filter({ hasText: 'Leg press' })).toContainText('40 kg');
   await expect(page.getByRole('list', { name: 'Cviky dnešního tréninku' }).getByRole('listitem')).toHaveCount(7);
 });

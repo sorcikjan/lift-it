@@ -41,31 +41,30 @@ test('Kotouče, B14, A9, G1–G4: superserie, zápis do sheetu a tep ze Stravy',
   await page.getByRole('button', { name: 'Začít trénink' }).click();
 
   // Kotouče: dřep 40 kg = osa + 10 kg na každou stranu
-  await press(page, page.getByRole('button', { name: 'Jdu na to' }).first());
-  await expect(page.getByTestId('plates')).toHaveAttribute('aria-label', 'Na každou stranu: 10 kg, osa 20 kg');
+  const card = page.getByTestId('run-card');
+  const btn = page.getByTestId('log-set');
+  await expect(card.getByTestId('plates')).toHaveAttribute('aria-label', 'Na každou stranu: 10 kg, osa 20 kg');
   await shot(page, 3, '02-kotouce');
-  await press(page, page.getByTestId('log-set'));
-  await expect(page.getByTestId('card-rest').getByTestId('plates')).toBeVisible();
-  await press(page, page.getByRole('button', { name: 'Jdu na další sérii' }));
-  await press(page, page.getByTestId('log-set'));
+  await press(page, btn);
+  await expect(card.getByText('Série 1 je doma.')).toBeVisible();
+  await expect(card.getByTestId('plates')).toBeVisible();
+  await press(page, btn);
 
   // B14: A1 → A2 bez pauzy, pauza až po dvojici
-  await expect(page.getByText('Hlavní část · Superserie A').first()).toBeVisible();
-  await press(page, page.getByRole('button', { name: 'Jdu na to' }).first());
-  const work = page.getByTestId('card-work');
-  await expect(work).toContainText('Tlak na prsa');
-  await expect(work).toContainText('Hned potom: Přítahy horní kladky');
+  await expect(card.getByText('Hlavní část · Superserie A')).toBeVisible();
+  await expect(card).toContainText('Tlak na prsa');
+  await expect(btn).toContainText('pak hned Přítahy horní kladky');
   await shot(page, 3, '03-superserie');
-  await press(page, page.getByTestId('log-set'));
-  await expect(work).toContainText('Přítahy horní kladky');
-  await expect(page.getByTestId('card-rest')).toHaveCount(0);
-  await press(page, page.getByTestId('log-set'));
-  await expect(page.getByTestId('card-rest')).toBeVisible();
-  await press(page, page.getByRole('button', { name: 'Jdu na další sérii' }));
-  await expect(work).toContainText('Tlak na prsa');
-  await press(page, page.getByTestId('log-set'));
-  await expect(work).toContainText('Přítahy horní kladky');
-  await press(page, page.getByTestId('log-set'));
+  await press(page, btn);
+  await expect(card).toContainText('Přítahy horní kladky');
+  await expect(card.getByText('Série 1 je doma.')).toHaveCount(0);
+  await press(page, btn);
+  await expect(card.getByText('Série 1 je doma.')).toBeVisible();
+  await expect(card).toContainText('Tlak na prsa');
+  await press(page, btn);
+  await expect(card).toContainText('Přítahy horní kladky');
+  await press(page, btn);
+  await expect(card).toContainText('Plank');
   await finishWorkout(page);
   await expect(page.getByRole('heading', { name: 'Trénink A hotový' })).toBeVisible();
 

@@ -27,6 +27,13 @@ export async function loadSample(page: Page) {
   await expect(page.getByRole('heading', { name: 'Trénink A' })).toBeVisible();
 }
 
+/** Domov ukazuje jen první tři cviky; rozbalí celý seznam. */
+export async function showAllExercises(page: Page) {
+  await expect(page.getByRole('list', { name: 'Cviky dnešního tréninku' })).toBeVisible();
+  const more = page.getByRole('button', { name: /^\+ \d+ dalších$/ });
+  if (await more.count()) await more.click();
+}
+
 export async function waitForSw(page: Page) {
   await page.waitForFunction(async () => {
     const r = await navigator.serviceWorker?.getRegistration();
@@ -39,17 +46,16 @@ export async function stats(page: Page) {
   return res.json();
 }
 
-/** Odcvičí aktuální cvik od karty Na řadě až po další kartu (nebo shrnutí). */
+/** Odcvičí aktuální cvik (jedno ťuknutí na sérii) až po další cvik (nebo shrnutí). */
 export async function doExercise(page: Page) {
-  await press(page, page.getByRole('button', { name: 'Jdu na to' }).first());
   for (;;) {
-    await expect(page.getByTestId('card-work')).toBeVisible();
-    const label = (await page.getByTestId('log-set').textContent()) ?? '';
-    await press(page, page.getByTestId('log-set'));
+    const btn = page.getByTestId('log-set');
+    await expect(btn).toBeVisible();
+    const label = (await btn.textContent()) ?? '';
+    await press(page, btn);
     if (label.includes('Hotovo, trénink je tvůj!')) return 'done';
-    if (label.includes('Série i cvik hotový')) return 'next';
-    await expect(page.getByTestId('card-rest')).toBeVisible();
-    await press(page, page.getByRole('button', { name: 'Jdu na další sérii' }));
+    await expect(btn).not.toHaveText(label);
+    if (label.includes('poslední série cviku')) return 'next';
   }
 }
 

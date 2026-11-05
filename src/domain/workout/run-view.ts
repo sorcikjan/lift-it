@@ -80,7 +80,7 @@ export function deriveRun(plan: WorkoutView, s: RunState, pickWanted = 0): RunLi
       name: e.name,
       blockLabel: t(`blok.${e.blok}`) + (e.group ? ` · ${t('run.superserie', { group: e.group })}` : ''),
       tag: nextCard && nextCard.tagKind !== 'next' ? nextCard.tag : null,
-      hint: s.phase === 'next' ? (cand.length > 1 && pick === 0 ? t('texty.naRadeVyber') : nextCard!.hint) : s.phase === 'rest' ? '' : w.cheer,
+      hint: s.phase === 'next' ? (cand.length > 1 && pick === 0 ? t('texty.naRadeVyber') : nextCard!.hint) : w.cheer,
       coachNote: e.coachNote,
       big: w.big,
       bigUnit: w.bigUnit,

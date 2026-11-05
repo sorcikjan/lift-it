@@ -26,29 +26,29 @@ Next.js (App Router) + TypeScript + Tailwind, PWA přes Serwist, lokální data 
 
 ## Obrazovka tréninku: co musí platit
 
-- Trénink je **jedna obrazovka s jednou kartou cviku**. Karta má tři stavy:
-  - **Na řadě**: bílá karta (#F2F4F1), tlačítko „Jdu na to“.
-  - **Cvičím**: modrá karta (#1F55C8), tlačítko „Série hotová“, které je zelené (#3FAF6B).
-  - **Vydýchej se**: žlutá karta (#E3B23C), tlačítko „Jdu na další sérii“.
-- Po poslední sérii cviku se pauza nezobrazuje: rovnou naskočí další karta Na řadě se zelenou pochvalou.
+Od redesignu 11/2026 (docs/rozhodnuti.md 35–40) platí místo tří stavů karty z PRD:
+
+- Trénink je **jeden seznam**: hotové cviky nahoře odškrtnuté, aktuální cvik jako rozsvícená karta, zbytek pod ní.
+- Karta: animovaná postava cviku (`ExerciseFigure`, vzor z `figureFor`), cíl série, kotouče, „Minule …“, pruhy sérií a **jedno tlačítko „Série N hotová“** (akce `tap` v automatu). Pauza je jen zelený text „Série N je doma.“ na kartě.
+- Po poslední sérii cviku rovnou další cvik se zelenou pochvalou.
 - **Žádné odpočty ani časovače.** Žádná úprava váhy a opakování během tréninku: hodnoty určuje plán. Odchylky se opravují ve shrnutí.
-- Trénink má bloky **úvod / hlavní část / závěr** (`PlannedExercise.blok`). Pořadí je vždy podle plánu. Jen v hlavní části jde kartu Na řadě švihnout na jiný cvik (scroll-snap karusel). Každou kartu jde vybrat i ťuknutím na její tlačítko. Přeskočené cviky se zařadí hned za zvolený, ne na konec.
-- Zelená = cokoli hotového: hotové série a cviky, tlačítko Série hotová, pochvaly, rekordy. Vždy s ikonou, nikdy jen barvou.
-- Texty ber doslova z tabulky *Texty (feel-good)* v PRD a dej je do `src/i18n/cs.json`. Tón je kamarádský a povzbudivý, sentence case, bez emoji a bez VELKÝCH PÍSMEN.
-- Stavový automat implementuj jako čistou funkci (`reducer(state, action)`) s unit testy. Logiku najdeš v `docs/prototype/Karta.dc.html`: metody `candidates`, `go`, `logSet`.
+- Bloky **úvod / hlavní část / závěr**. Pořadí podle plánu; jen v hlavní části jde ťuknutím na řádek cvičit jiný cvik, přeskočený přijde hned po něm.
+- Zelená = cokoli hotového, vždy s ikonou. Texty z tabulky *Texty (feel-good)* v PRD v `src/i18n/cs.json`, tón kamarádský, sentence case, bez emoji.
+- Stavový automat je čistá funkce `reducer(state, action)` s unit testy; obrazovku odvozuje `deriveRun` (`src/domain/workout/run-view.ts`).
+- Pohyb respektuje `prefers-reduced-motion`.
 
 ## Design tokeny
 
 | Token | Hodnota | Použití |
 | --- | --- | --- |
-| guma | #1C2024 | pozadí |
-| grafit | #2A3036 | plochy |
+| guma | #111418 | pozadí (redesign 11/2026) |
+| grafit | #1B1F24 | plochy (karty s okrajem `hrana` #262C33) |
 | krida | #F2F4F1 | text, karta Na řadě |
 | ocel | #9AA3AB | vedlejší text |
-| modra-akce | #2F6FE4 | akční tlačítka (Začít trénink, Jdu na to), data v grafech |
+| modra-akce | #3B7BFF | akční tlačítka (Začít trénink, Série N hotová) s přechodem a září, data v grafech |
 | modra-karta | #1F55C8 | stav Cvičím |
 | zluta | #E3B23C | stav Vydýchej se, tmavý text |
-| splneno | #3FAF6B | vše hotové, vždy s ikonou |
+| splneno | #34C77B | vše hotové, vždy s ikonou |
 
 Písmo: Barlow Condensed (čísla, nadpisy, tabulkové číslice) a Barlow (text), obě z Google Fonts. Dotykové plochy ≥ 56 px, mezery ≥ 12 px, hlavní akce v dolní třetině, desetinná čárka (37,5 kg).
 

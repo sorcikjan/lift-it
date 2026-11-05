@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { freshUser, shot } from './helpers';
+import { freshUser, shot, showAllExercises } from './helpers';
 
 test('A7: vložená tabulka vytvoří trénink se správnými cviky, sériemi a váhami', async ({ page }) => {
   await freshUser(page);
@@ -27,6 +27,7 @@ test('A7: vložená tabulka vytvoří trénink se správnými cviky, sériemi a 
 
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Trénink A' })).toBeVisible();
+  await showAllExercises(page);
   const leg = page.getByRole('listitem').filter({ hasText: 'Leg press' });
   await expect(leg).toContainText('4 × 10');
   await expect(leg).toContainText('40 kg');
@@ -56,6 +57,7 @@ test('XLSX od trenéra: soubor z mailu dá celý trénink s úvodem a poznámkou
   await page.getByRole('button', { name: 'Uložit týden' }).click();
   await expect(page.getByText('Týden je uložený. Jdeme cvičit?')).toBeVisible();
   await page.goto('/');
+  await showAllExercises(page);
   for (const n of ['Seated Thoracic Rotation with Medicine Ball', 'Zakopávání na stroji', 'Shoulder press DB', 'Plank']) {
     await expect(page.getByRole('listitem').filter({ hasText: n })).toBeVisible();
   }

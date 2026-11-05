@@ -23,6 +23,7 @@ describe('Obrazovka tréninku: jeden seznam a jedno tlačítko', () => {
     const v = deriveRun(plan, run(initRunState(plan), tap()));
     expect(v.card!.rest).toEqual({ title: 'Série 1 je doma.', line: 'Dej si tolik času, kolik potřebuješ. Až budeš chtít, jdeme dál.' });
     expect(v.card).toMatchObject({ setNo: 2, cta: 'Série 2 hotová', ctaSub: 'zbývá ještě 1 série' });
+    expect(v.card!.hint).toBe('Ještě tahle a jedna. Jde ti to.');
     expect(v.setsDone).toBe(1);
   });
   it('poslední série cviku a pak hotový řádek a pochvala', () => {

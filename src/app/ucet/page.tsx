@@ -16,6 +16,8 @@ import { profileSummary } from '@/domain/profile';
 import { t } from '@/i18n/t';
 
 const DNY = ['po', 'út', 'st', 'čt', 'pá', 'so', 'ne'];
+/** „od listopadu 2026“: měsíc ve 2. pádě */
+const MESICE = ['ledna', 'února', 'března', 'dubna', 'května', 'června', 'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'];
 const delay = (i: number) => ({ '--i': i }) as React.CSSProperties;
 
 /** Profil a účet (F1, redesign 11/2026): kdo jsem, tento týden, souhrn; Strava, trenér, export. */
@@ -38,7 +40,7 @@ export default function AccountPage() {
     location.href = '/';
   };
   const name = me && !me.dev ? me.name || me.email : null;
-  const since = p?.since ? new Date(p.since).toLocaleDateString('cs-CZ', { month: 'long', year: 'numeric' }) : null;
+  const since = p?.since ? `${MESICE[new Date(p.since).getMonth()]} ${new Date(p.since).getFullYear()}` : null;
 
   return (
     <Page>
