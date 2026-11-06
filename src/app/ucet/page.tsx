@@ -13,6 +13,8 @@ import { Avatar, GoogleG } from '@/components/brand';
 import { Back } from '@/components/icons';
 import { Button, Card, Page } from '@/components/ui';
 import { profileSummary } from '@/domain/profile';
+import { doneSessions } from '@/client/repo';
+import { dayLabel } from '@/domain/dates';
 import { t } from '@/i18n/t';
 
 const DNY = ['po', 'út', 'st', 'čt', 'pá', 'so', 'ne'];
@@ -32,6 +34,7 @@ export default function AccountPage() {
     if (me && next && next.startsWith('/') && !next.startsWith('//') && next !== '/ucet') location.replace(next);
   }, [me]);
   const p = useLiveQuery(async () => profileSummary(await db().sessions.toArray(), await db().logged_sets.toArray()), []);
+  const history = useLiveQuery(doneSessions, []);
 
   const logout = async () => {
     await flush();
@@ -88,6 +91,22 @@ export default function AccountPage() {
         )}
         {!me && !supabaseEnabled && <Card className="mt-4"><p className="text-[16px] text-ocel">{t('auth.neprihlasen')}</p></Card>}
         {mode === 'dev' && <p className="mt-3 text-[14px] text-zluta">{t('auth.nenastaveno')}</p>}
+
+        {!!history?.length && (
+          <section className="mt-5" aria-label={t('profil.treninky')}>
+            <h2 className="mb-2 font-display text-[22px] font-bold">{t('profil.treninky')}</h2>
+            <ul className="flex flex-col overflow-hidden rounded-[20px] border border-hrana bg-grafit">
+              {history.map((h) => (
+                <li key={h.id} className="border-b border-hrana last:border-b-0">
+                  <Link href={`/shrnuti?id=${h.id}`} data-testid="history-row" className="tap flex items-center justify-between gap-3 px-4">
+                    <span>{h.label ? t('profil.treninkRadek', { label: h.label }) : t('profil.bezPlanu')} <span className="text-ocel">· {dayLabel(h.startedAt)}</span></span>
+                    <span className="whitespace-nowrap text-ocel tabular">{h.sets} {t('profil.serii')}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <AccountExtras me={me} />
 

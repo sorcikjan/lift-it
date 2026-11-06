@@ -138,3 +138,12 @@ a test v posilovně na iPhonu.
 - Vitest: akce `tap` (7), seznam tréninku (6), Minule (3), postavy (15), profil (2). Celkem 277.
 - Playwright: celý trénink jedním ťuknutím na sérii, výběr jiného cviku v hlavní části, obnova po reloadu, Zpět, Minule z historie, superserie, kotouče, malé displeje (tlačítko celé vidět, hlavička se nezalomí), zámek displeje po ťuknutí, vstup, profil. Screenshoty `docs/screenshots/faze-5/`.
 
+
+## Smazání zkušebních tréninků (6. 11. 2026)
+
+- **Profil:** nový seznam „Odcvičené tréninky“ (trénink, den, počet sérií), řádek otevře shrnutí.
+- **Shrnutí:** „Smazat trénink“ dole, druhé ťuknutí potvrdí. Trénink se archivuje i se sériemi a poznámkami (rozhodnutí 41).
+- Opětovný import týdne bere smazaný trénink jako neodcvičený.
+
+**Ověření**
+- Playwright: odcvičit trénink, smazat ho z profilu, zmizí ze seznamu, z týdne i ze souhrnu.

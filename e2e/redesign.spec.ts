@@ -30,3 +30,28 @@ test('Profil: týden, souhrn a Strava', async ({ page }) => {
   await page.waitForTimeout(1200);
   await shot(page, 5, '08-profil');
 });
+
+test('Smazat trénink: zkušební trénink zmizí z profilu i z týdne', async ({ page }) => {
+  await freshUser(page);
+  await loadSample(page);
+  await page.getByRole('button', { name: 'Začít trénink' }).click();
+  let r = 'next';
+  while (r === 'next') r = await doExercise(page);
+  await expect(page.getByRole('heading', { name: 'Trénink A hotový' })).toBeVisible();
+  await page.goto('/ucet');
+  const row = page.getByTestId('history-row');
+  await expect(row).toHaveCount(1);
+  await expect(row).toContainText('Trénink A');
+  await expect(row).toContainText('22 sérií');
+  await row.click();
+  const del = page.getByTestId('delete-session');
+  await del.click();
+  await expect(del).toHaveText('Opravdu smazat? Zmizí i z Progresu');
+  await del.click();
+  await expect(page).toHaveURL(/\/ucet/);
+  await expect(page.getByRole('img', { name: 'Tento týden: 0 z 7 dní s tréninkem' })).toBeVisible();
+  await expect(page.getByTestId('history-row')).toHaveCount(0);
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Začít trénink' })).toBeVisible();
+  await expect(page.getByText(/^0 ze \d+ tréninků/)).toBeVisible();
+});

@@ -192,7 +192,9 @@
     "pridatCvik": "Přidat cvik navíc",
     "pridatCvikText": "Odcvičil jsi něco mimo plán? Vyber cvik a ťukni na sérii, ať doplníš opakování a váhu.",
     "serieN": "{n}. série",
-    "navic": "navíc"
+    "navic": "navíc",
+    "smazatTrenink": "Smazat trénink",
+    "smazatOpravdu": "Opravdu smazat? Zmizí i z Progresu"
   },
   "progres": {
     "nadpis": "Progres",
@@ -520,6 +522,9 @@
     "zapnuto": "Zapnuto",
     "stravaBrzy": "Tep a kalorie z hodinek přes Stravu. Propojení se připravuje.",
     "host": "Bez účtu",
-    "hostText": "Tréninky jsou zatím jen v tomhle telefonu. Přihlas se, ať se neztratí."
+    "hostText": "Tréninky jsou zatím jen v tomhle telefonu. Přihlas se, ať se neztratí.",
+    "treninky": "Odcvičené tréninky",
+    "treninkRadek": "Trénink {label}",
+    "bezPlanu": "Trénink"
   }
 }

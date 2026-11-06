@@ -122,7 +122,7 @@ export async function reimportWeek(sheetUrl: string, sheetTab: string | null, wo
   const week = (await db().plan_weeks.toArray()).find((w) => !w.archived && w.sheet_url === sheetUrl && (w.sheet_tab ?? null) === sheetTab);
   if (!week) return null;
   const existing = (await db().workouts.where('week_id').equals(week.id).toArray()).filter((w) => !w.archived);
-  const doneWorkouts = new Set((await db().sessions.toArray()).filter((s) => s.workout_id && s.status !== 'abandoned').map((s) => s.workout_id));
+  const doneWorkouts = new Set((await db().sessions.toArray()).filter((s) => s.workout_id && s.status !== 'abandoned' && !s.archived).map((s) => s.workout_id));
   let updated = 0;
   for (const [i, w] of workouts.entries()) {
     const old = existing.find((x) => x.label === w.label);
@@ -341,6 +341,29 @@ export async function updateSession(id: string, patch: Partial<Session>) {
   const s = await db().sessions.get(id);
   if (!s) return;
   await save('sessions', [{ ...s, ...patch } as unknown as Row]);
+}
+
+/** Odcvičené tréninky od nejnovějšího (profil): datum, trénink, počet sérií. */
+export async function doneSessions(): Promise<{ id: string; startedAt: string; label: string | null; sets: number }[]> {
+  const d = db();
+  const sessions = (await d.sessions.toArray()).filter((s) => s.status === 'done' && !s.archived && s.source === 'app')
+    .sort((a, b) => (a.started_at < b.started_at ? 1 : -1));
+  const sets = (await d.logged_sets.toArray()).filter((x) => !x.archived && !x.skipped);
+  const labels = new Map((await d.workouts.bulkGet(sessions.map((s) => s.workout_id ?? ''))).filter(Boolean).map((w) => [w!.id, w!.label]));
+  return sessions.map((s) => ({ id: s.id, startedAt: s.started_at, label: s.workout_id ? labels.get(s.workout_id) ?? null : null, sets: sets.filter((x) => x.session_id === s.id).length }));
+}
+
+/** Smazat trénink (třeba zkušební): trénink, jeho série a poznámky se archivují, zmizí z historie i Progresu. */
+export async function archiveSession(id: string) {
+  const d = db();
+  const s = await d.sessions.get(id);
+  if (!s) return;
+  const sets = await d.logged_sets.where('session_id').equals(id).toArray();
+  const notes = await d.session_notes.where('session_id').equals(id).toArray();
+  await save('logged_sets', sets.map((x) => ({ ...x, archived: true })) as unknown as Row[]);
+  await save('session_notes', notes.map((x) => ({ ...x, archived: true })) as unknown as Row[]);
+  await save('sessions', [{ ...s, archived: true } as unknown as Row]);
+  if ((await d.active_run.get('current'))?.session_id === id) await d.active_run.delete('current');
 }
 
 /** Poznámka ke cviku nebo k tréninku (B13). Jedna poznámka na cvik v tréninku, přepisuje se. */

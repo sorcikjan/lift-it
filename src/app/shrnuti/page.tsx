@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/client/db';
 import { exerciseName } from '@/client/library';
-import { addExtraExercise, addExtraLoggedSet, saveNote, updateLoggedSet, updateSession } from '@/client/repo';
+import { addExtraExercise, archiveSession, addExtraLoggedSet, saveNote, updateLoggedSet, updateSession } from '@/client/repo';
 import { recordHistory, summarize } from '@/domain/progress';
 import { fmtKg, fmtNum, parseCzNumber, roundKg } from '@/domain/format';
 import { dayLabel } from '@/domain/dates';
@@ -166,9 +166,22 @@ function Summary() {
         <ShareButton sessionId={session.id} label={workout?.label ?? ''} />
         <WritebackButton sessionId={session.id} />
         <LinkButton href="/" big variant="done"><Check size={28} />{t('common.hotovo')}</LinkButton>
+        <DeleteSession id={session.id} />
       </div>
       <BottomNav />
     </Page>
+  );
+}
+
+/** Smazání tréninku na dvě ťuknutí: první se zeptá, druhé smaže. */
+function DeleteSession({ id }: { id: string }) {
+  const [ask, setAsk] = useState(false);
+  return (
+    <button type="button" data-testid="delete-session"
+      onClick={async () => { if (!ask) { setAsk(true); return; } await archiveSession(id); location.href = '/ucet'; }}
+      className={`tap mt-2 rounded-2xl text-[16px] ${ask ? 'border border-[#FF6B6B] font-semibold text-[#FF8A8A]' : 'text-ocel underline underline-offset-4'}`}>
+      {ask ? t('summary.smazatOpravdu') : t('summary.smazatTrenink')}
+    </button>
   );
 }
 
