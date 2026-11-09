@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { doExercise, freshUser, loadSample, shot, showAllExercises } from './helpers';
+import { doExercise, freshUser, loadSample, shot } from './helpers';
 
 test('Vstup: nepřihlášený bez dat vidí claim a Google, bez účtu pustí dál', async ({ page }) => {
   await freshUser(page);
@@ -67,10 +67,9 @@ test('Oproti minule: domov ukáže přidané kilo u cviků, profil směr síly',
     await expect(page.getByText('Hotovo')).toBeVisible();
   }
   await loadSample(page);
-  await expect(page.getByTestId('vs-last')).toHaveText(/Oproti minule přidáno u 2 z 2 cviků/);
-  await showAllExercises(page);
-  await expect(page.getByRole('listitem').filter({ hasText: 'Tlak na prsa' }).getByTestId('delta')).toHaveText('+2,5 kg');
-  await expect(page.getByRole('listitem').filter({ hasText: 'Leg press' }).getByTestId('delta')).toHaveText('+2,5 kg');
+  await expect(page.getByTestId('vs-last')).toHaveText('Oproti minulému tréninku: přidáno: 2');
+  await expect(page.getByRole('listitem').filter({ hasText: 'Tlak na prsa' }).getByTestId('delta')).toHaveText('+2,5 kg · minule 32,5 kg × 8');
+  await expect(page.getByRole('listitem').filter({ hasText: 'Leg press' }).getByTestId('delta')).toHaveText('+2,5 kg · minule 37,5 kg × 10');
   await shot(page, 5, '12-oproti-minule');
   await page.goto('/ucet');
   const trend = page.getByTestId('trend');
@@ -79,4 +78,26 @@ test('Oproti minule: domov ukáže přidané kilo u cviků, profil směr síly',
   await expect(trend).toContainText('Roste 2 z 2 cviků');
   await page.waitForTimeout(1000);
   await shot(page, 5, '13-smer');
+});
+
+test('Oproti minulému týdnu: nový týden od trenéra ukáže přidané váhy, opakování a nový cvik', async ({ page }) => {
+  await freshUser(page);
+  const monday = (d: Date) => { const m = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)); return m.toLocaleDateString('sv-SE'); };
+  const thisWeek = monday(new Date());
+  const lastWeek = monday(new Date(Date.now() - 7 * 86400_000));
+  for (const [date, rows] of [[lastWeek, 'Tlak na prsa\t3x8\t32,5\nLeg press\t4x10\t40'], [thisWeek, 'Tlak na prsa\t3x8\t35\nLeg press\t4x12\t40\nVeslování na kladce\t3x12\t30']]) {
+    await page.goto('/import');
+    await page.getByRole('textbox', { name: 'Vložit zkopírovanou tabulku' }).fill(rows);
+    await page.getByRole('button', { name: 'Zpracovat' }).click();
+    await page.getByLabel('Týden od').fill(date);
+    await page.getByRole('button', { name: 'Uložit týden' }).click();
+    await expect(page.getByText('Týden je uložený. Jdeme cvičit?')).toBeVisible();
+  }
+  await page.goto('/');
+  await expect(page.getByTestId('vs-last')).toHaveText('Oproti minulému týdnu: přidáno: 2 · nové: 1');
+  const row = (name: string) => page.getByRole('listitem').filter({ hasText: name }).getByTestId('delta');
+  await expect(row('Tlak na prsa')).toHaveText('+2,5 kg · minule 32,5 kg × 8');
+  await expect(row('Leg press')).toHaveText('+2 opak. · minule 40 kg × 10');
+  await expect(row('Veslování na kladce')).toHaveText('Nový cvik');
+  await shot(page, 5, '14-oproti-tydnu');
 });

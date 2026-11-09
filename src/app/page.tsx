@@ -10,8 +10,8 @@ import { SyncBadge } from '@/components/SyncBadge';
 import { Avatar, Brand, GoogleG } from '@/components/brand';
 import { ExerciseFigure } from '@/components/ExerciseFigure';
 import { CoachPrompt } from '@/components/CoachPrompt';
-import { activeRun, currentWeek, lastTimesFor, startWorkout, workoutView } from '@/client/repo';
-import { planDelta, type PlanDelta } from '@/domain/workout/last';
+import { activeRun, currentWeek, lastTimesFor, previousWorkoutView, startWorkout, workoutView } from '@/client/repo';
+import { weekDiff, type ExerciseChange } from '@/domain/workout/week-diff';
 import { importSample } from '@/client/importer';
 import { onMe, type AuthMode, type Me } from '@/client/me';
 import { getMeta, setMeta } from '@/client/db';
@@ -29,7 +29,7 @@ export default function Home() {
   const [picked, setPicked] = useState<string | null>(null);
   const [withCoach, setWithCoach] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [all, setAll] = useState(false);
+  const [all, setAll] = useState<boolean | null>(null);
   const [me, setMe] = useState<Me | null>(null);
   const [mode, setMode] = useState<AuthMode>('none');
   const [skip, setSkip] = useState<boolean | null>(null);
@@ -39,15 +39,15 @@ export default function Home() {
     const [week, run] = await Promise.all([currentWeek(), activeRun()]);
     const wid = picked ?? run?.workout_id ?? week?.today?.id ?? week?.workouts[0]?.workout.id ?? null;
     const view = wid ? await workoutView(wid) : null;
-    // Oproti minule: dnešní plán každého cviku proti tomu, co jsem minule odcvičil
-    const last = view ? await lastTimesFor(view.exercises.map((e) => e.exerciseId), null) : new Map();
-    const deltas = new Map<string, PlanDelta>();
-    for (const e of view?.exercises ?? []) { const d = planDelta(e.sets, last.get(e.exerciseId)); if (d) deltas.set(e.id, d); }
-    return { week, run, view, deltas };
+    // Co je nového: plán proti stejnému tréninku z minulého týdne, jinak proti odcvičenému
+    const [prev, last] = view ? await Promise.all([previousWorkoutView(view.workoutId), lastTimesFor(view.exercises.map((e) => e.exerciseId), null)]) : [null, new Map()];
+    const diff = weekDiff(view?.exercises ?? [], prev?.exercises ?? null, last);
+    return { week, run, view, diff };
   }, [picked]);
 
   if (!data || skip === null) return <Page><p className="pt-10 text-ocel">{t('common.nacitam')}</p></Page>;
-  const { week, run, view, deltas } = data;
+  const { week, run, view, diff } = data;
+  const deltas = diff.changes;
 
   if (mode === 'supabase' && !me && !week && !skip) {
     return <Landing onSkip={async () => { await setMeta('skipLanding', true); setSkip(true); }} />;
@@ -80,9 +80,14 @@ export default function Home() {
 
   const nSets = view.exercises.reduce((m, e) => m + e.sets.length, 0);
   const est = Math.round(view.exercises.reduce((m, e) => m + e.sets.length * 2.2, 0) + view.exercises.length * 1.5);
-  const shown = all ? view.exercises : view.exercises.slice(0, PEEK);
+  const changed = [...deltas.values()].filter((d) => d.dir !== 'same');
+  // Když trenér něco změnil, seznam je rovnou celý, ať je vidět co
+  const open = all ?? changed.length > 0;
+  const shown = open ? view.exercises : view.exercises.slice(0, PEEK);
   const hero = view.exercises.find((e) => e.blok === 'hlavni') ?? view.exercises[0];
-  const ups = [...deltas.values()].filter((d) => d.dir === 'up').length;
+  const count = (dir: string) => [...deltas.values()].filter((d) => d.dir === dir).length;
+  const ups = count('up'), news = count('new'), downs = count('down');
+  const parts = [ups && t('home.zmenaTezsi', { n: ups }), news && t('home.zmenaNove', { n: news }), downs && t('home.zmenaLehci', { n: downs })].filter(Boolean);
   return (
     <Page>
       <TopBar me={me} />
@@ -102,9 +107,9 @@ export default function Home() {
             ))}
           </div>
 
-          {deltas.size > 0 && (
-            <p data-testid="vs-last" className={`mt-3 text-[15px] font-semibold ${ups ? 'text-splneno-svetla' : 'text-ocel'}`}>
-              {ups ? `↑ ${t('home.oprotiMinule', { up: ups, total: deltas.size })}` : t('home.oprotiMinuleStejne')}
+          {diff.basis && (
+            <p data-testid="vs-last" className={`mt-3 text-[15px] font-semibold ${ups || news ? 'text-splneno-svetla' : 'text-ocel'}`}>
+              {diff.basis === 'week' ? t('home.oprotiTydnu') : t('home.oprotiMinule')}: {parts.length ? parts.join(' · ') : t('home.zmenaZadna')}
             </p>
           )}
 
@@ -118,12 +123,7 @@ export default function Home() {
                   <span className="w-6 font-display text-[17px] font-semibold text-ocel tabular">{no}</span>
                   <span className="min-w-0 flex-1">
                     <Link href={`/knihovna/cvik?id=${encodeURIComponent(e.exerciseId)}`} className="block truncate text-[16px]">{e.name}</Link>
-                    {deltas.get(e.id)?.text && (
-                      <small data-testid="delta" aria-label={t('home.deltaAria', { text: deltas.get(e.id)!.text! })}
-                        className={`block text-[13px] font-semibold tabular ${deltas.get(e.id)!.dir === 'up' ? 'text-splneno-svetla' : 'text-ocel'}`}>
-                        {deltas.get(e.id)!.text}
-                      </small>
-                    )}
+                    <Change c={deltas.get(e.id)} />
                   </span>
                   <span className="font-display text-[17px] font-semibold text-ocel tabular">{l.sets}</span>
                   <span className="w-[76px] text-right font-display text-[17px] font-semibold text-ocel tabular">{l.weight}</span>
@@ -132,8 +132,8 @@ export default function Home() {
             })}
           </ol>
           {view.exercises.length > PEEK && (
-            <button type="button" onClick={() => setAll(!all)} className="tap -mt-3 mb-1 w-full text-left text-[15px] text-ocel">
-              {all ? t('home.mene') : t('home.dalsich', { n: view.exercises.length - PEEK })}
+            <button type="button" onClick={() => setAll(!open)} className="tap -mt-3 mb-1 w-full text-left text-[15px] text-ocel">
+              {open ? t('home.mene') : t('home.dalsich', { n: view.exercises.length - PEEK })}
             </button>
           )}
 
@@ -171,6 +171,18 @@ export default function Home() {
       <p className="mt-4 text-[14px] text-ocel">{t('home.garminTip')}</p>
       <BottomNav />
     </Page>
+  );
+}
+
+/** Pod názvem cviku: „+2,5 kg · minule 32,5 kg × 8“ nebo „Nový cvik“. */
+function Change({ c }: { c?: ExerciseChange }) {
+  if (!c || c.dir === 'same') return null;
+  if (c.dir === 'new') return <small data-testid="delta" className="block text-[13px] font-semibold text-modra-text">{t('home.novyCvik')}</small>;
+  return (
+    <small data-testid="delta" className="block text-[13px] tabular">
+      <b className={c.dir === 'up' ? 'text-splneno-svetla' : 'text-ocel'}>{c.text}</b>
+      {c.was && <span className="text-ocel"> · {t('home.bylo', { was: c.was })}</span>}
+    </small>
   );
 }
 

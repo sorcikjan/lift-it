@@ -224,6 +224,22 @@ export async function currentWeek(): Promise<WeekOverview | null> {
   return { week, workouts: items, doneCount: items.filter((x) => x.done).length, today: items.find((x) => !x.done)?.workout ?? null };
 }
 
+/** Stejný trénink (podle písmene) z předchozího týdne od trenéra, pro „oproti minulému týdnu“. Historie (baseline) se nepočítá. */
+export async function previousWorkoutView(workoutId: string): Promise<WorkoutView | null> {
+  const d = db();
+  const wo = await d.workouts.get(workoutId);
+  const week = wo ? await d.plan_weeks.get(wo.week_id) : undefined;
+  if (!wo || !week) return null;
+  const prevWeeks = (await d.plan_weeks.toArray())
+    .filter((w) => !w.archived && w.source !== 'baseline' && w.id !== week.id && w.week_start < week.week_start)
+    .sort((a, b) => (a.week_start < b.week_start ? 1 : -1));
+  for (const pw of prevWeeks) {
+    const match = (await d.workouts.where('week_id').equals(pw.id).toArray()).find((w) => !w.archived && w.label === wo.label);
+    if (match) return workoutView(match.id);
+  }
+  return null;
+}
+
 // --- Běh tréninku --------------------------------------------------------------------------------
 
 export async function activeRun(): Promise<ActiveRun | undefined> {

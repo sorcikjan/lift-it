@@ -74,9 +74,15 @@
     "dalsich": "+ {n} dalších",
     "vsechnyCviky": "Ukázat všechny cviky",
     "mene": "Méně",
-    "oprotiMinule": "Oproti minule přidáno u {up} z {total} cviků",
-    "oprotiMinuleStejne": "Stejné jako minule",
-    "deltaAria": "Oproti minule {text}"
+    "deltaAria": "Oproti minule {text}",
+    "oprotiTydnu": "Oproti minulému týdnu",
+    "oprotiMinule": "Oproti minulému tréninku",
+    "zmenaTezsi": "přidáno: {n}",
+    "zmenaNove": "nové: {n}",
+    "zmenaLehci": "ubráno: {n}",
+    "zmenaZadna": "beze změny",
+    "novyCvik": "Nový cvik",
+    "bylo": "minule {was}"
   },
   "run": {
     "hlavicka": "Trénink {label} · cvik {n} ze {total}",

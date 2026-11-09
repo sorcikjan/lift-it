@@ -168,3 +168,11 @@ a test v posilovně na iPhonu.
 **Ověření**
 - Vitest: rozdíl plánu proti minule (7), směr síly (2). Celkem 292.
 - Playwright: 22/22 (offline test napoprvé jednou neprošel, při opakování prošel); nově dvě historie → domov ukáže +2,5 kg, profil +8 %.
+
+## Oproti minulému týdnu (9. 11. 2026)
+
+- Srovnání na domově je plán proti plánu stejného tréninku z minulého týdne (dřív jen proti odcvičenému, a když chyběla historie, nebylo vidět nic): přidaná váha i opakování, z kolika („minule 32,5 kg × 8“), nový cvik. Seznam cviků se při změně rozbalí sám (rozhodnutí 44).
+
+**Ověření**
+- Vitest: srovnání týdnů (2). Celkem 294.
+- Playwright: 24/24, nově dva týdny vložené tabulkou → přidáno 2, nový 1.
