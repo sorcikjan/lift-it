@@ -344,13 +344,13 @@ export async function updateSession(id: string, patch: Partial<Session>) {
 }
 
 /** Odcvičené tréninky od nejnovějšího (profil): datum, trénink, počet sérií. */
-export async function doneSessions(): Promise<{ id: string; startedAt: string; label: string | null; sets: number }[]> {
+export async function doneSessions(): Promise<{ id: string; startedAt: string; label: string | null; sets: number; coach: boolean; paid: boolean | null }[]> {
   const d = db();
-  const sessions = (await d.sessions.toArray()).filter((s) => s.status === 'done' && !s.archived && s.source === 'app')
+  const sessions = (await d.sessions.toArray()).filter((s) => s.status === 'done' && !s.archived && (s.source === 'app' || s.source === 'coach'))
     .sort((a, b) => (a.started_at < b.started_at ? 1 : -1));
   const sets = (await d.logged_sets.toArray()).filter((x) => !x.archived && !x.skipped);
   const labels = new Map((await d.workouts.bulkGet(sessions.map((s) => s.workout_id ?? ''))).filter(Boolean).map((w) => [w!.id, w!.label]));
-  return sessions.map((s) => ({ id: s.id, startedAt: s.started_at, label: s.workout_id ? labels.get(s.workout_id) ?? null : null, sets: sets.filter((x) => x.session_id === s.id).length }));
+  return sessions.map((s) => ({ id: s.id, startedAt: s.started_at, label: s.workout_id ? labels.get(s.workout_id) ?? null : null, sets: sets.filter((x) => x.session_id === s.id).length, coach: s.source === 'coach', paid: s.paid ?? null }));
 }
 
 /** Smazat trénink (třeba zkušební): trénink, jeho série a poznámky se archivují, zmizí z historie i Progresu. */

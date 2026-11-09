@@ -14,6 +14,9 @@ import { Back } from '@/components/icons';
 import { Button, Card, Page } from '@/components/ui';
 import { profileSummary } from '@/domain/profile';
 import { doneSessions } from '@/client/repo';
+import { PaidToggle } from '@/components/PaidToggle';
+import { addCoachSession } from '@/client/strava';
+import { shortDate } from '@/domain/dates';
 import { dayLabel } from '@/domain/dates';
 import { t } from '@/i18n/t';
 
@@ -92,21 +95,7 @@ export default function AccountPage() {
         {!me && !supabaseEnabled && <Card className="mt-4"><p className="text-[16px] text-ocel">{t('auth.neprihlasen')}</p></Card>}
         {mode === 'dev' && <p className="mt-3 text-[14px] text-zluta">{t('auth.nenastaveno')}</p>}
 
-        {!!history?.length && (
-          <section className="mt-5" aria-label={t('profil.treninky')}>
-            <h2 className="mb-2 font-display text-[22px] font-bold">{t('profil.treninky')}</h2>
-            <ul className="flex flex-col overflow-hidden rounded-[20px] border border-hrana bg-grafit">
-              {history.map((h) => (
-                <li key={h.id} className="border-b border-hrana last:border-b-0">
-                  <Link href={`/shrnuti?id=${h.id}`} data-testid="history-row" className="tap flex items-center justify-between gap-3 px-4">
-                    <span>{h.label ? t('profil.treninkRadek', { label: h.label }) : t('profil.bezPlanu')} <span className="text-ocel">· {dayLabel(h.startedAt)}</span></span>
-                    <span className="whitespace-nowrap text-ocel tabular">{h.sets} {t('profil.serii')}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <History list={history ?? []} />
 
         <AccountExtras me={me} />
 
@@ -124,5 +113,49 @@ export default function AccountPage() {
       </div>
       <BottomNav />
     </Page>
+  );
+}
+
+type HistoryRow = Awaited<ReturnType<typeof doneSessions>>[number];
+
+/** Odcvičené tréninky; s trenérem i s přepínačem Zaplaceno, nahoře souhrn nezaplacených. */
+function History({ list }: { list: HistoryRow[] }) {
+  const [adding, setAdding] = useState(false);
+  const [day, setDay] = useState(() => new Date().toLocaleDateString('sv-SE'));
+  const owed = list.filter((h) => h.coach && h.paid === false).reverse();
+  return (
+    <section className="mt-5" aria-label={t('profil.treninky')}>
+      <h2 className="mb-2 font-display text-[22px] font-bold">{t('profil.treninky')}</h2>
+      {owed.length > 0 && (
+        <p data-testid="unpaid" className="mb-2 rounded-2xl border border-zluta/40 bg-zluta/10 px-4 py-3 text-[16px] text-zluta">
+          {t('sTrenerem.nezaplacenoSouhrn', { list: owed.map((h) => shortDate(h.startedAt)).join(', ') })}
+        </p>
+      )}
+      {list.length > 0 && (
+        <ul className="flex flex-col overflow-hidden rounded-[20px] border border-hrana bg-grafit">
+          {list.map((h) => (
+            <li key={h.id} className="flex items-center border-b border-hrana last:border-b-0">
+              <Link href={`/shrnuti?id=${h.id}`} data-testid="history-row" className="tap flex min-w-0 flex-1 items-center justify-between gap-3 px-4">
+                <span className="min-w-0 py-2.5"><span className="block truncate">{h.coach ? t('sTrenerem.nazev') : h.label ? t('profil.treninkRadek', { label: h.label }) : t('profil.bezPlanu')}</span><small className="block text-[14px] text-ocel">{dayLabel(h.startedAt)}</small></span>
+                {!h.coach && <span className="whitespace-nowrap text-ocel tabular">{h.sets} {t('profil.serii')}</span>}
+              </Link>
+              {h.coach && <PaidToggle id={h.id} paid={!!h.paid} day={dayLabel(h.startedAt)} />}
+            </li>
+          ))}
+        </ul>
+      )}
+      {adding ? (
+        <div className="mt-2 rounded-[20px] border border-hrana bg-grafit p-4">
+          <p className="text-[15px] text-ocel">{t('sTrenerem.pridatText')}</p>
+          <label className="mt-2 flex flex-col gap-1 text-[14px] text-ocel">{t('sTrenerem.den')}
+            <input type="date" value={day} max={new Date().toLocaleDateString('sv-SE')} onChange={(e) => setDay(e.target.value)}
+              className="h-12 rounded-xl border border-linka bg-guma px-3 text-[17px] text-white" /></label>
+          <button type="button" disabled={!day} onClick={async () => { await addCoachSession({ day }); setAdding(false); }}
+            className="tap press mt-3 w-full rounded-2xl bg-modra-akce font-display text-[20px] font-bold disabled:opacity-50">{t('sTrenerem.zapsat')}</button>
+        </div>
+      ) : (
+        <button type="button" onClick={() => setAdding(true)} className="tap mt-2 w-full rounded-2xl border border-linka text-[16px] font-semibold text-ocel">{t('sTrenerem.pridat')}</button>
+      )}
+    </section>
   );
 }

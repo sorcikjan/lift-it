@@ -526,5 +526,25 @@
     "treninky": "Odcvičené tréninky",
     "treninkRadek": "Trénink {label}",
     "bezPlanu": "Trénink"
+  },
+  "sTrenerem": {
+    "nabidkaNadpis": "Ve Stravě máš trénink bez záznamu",
+    "nabidkaOtazka": "Byl to trénink s trenérem?",
+    "ano": "Ano, zapsat",
+    "ne": "Ne",
+    "radek": "{day} · {min} min",
+    "tep": "tep {n}",
+    "nazev": "Trénink s trenérem",
+    "zaplaceno": "Zaplaceno",
+    "nezaplaceno": "Nezaplaceno",
+    "zaplacenoAria": "Zaplaceno: {day}",
+    "nezaplacenoSouhrn": "Nezaplaceno: {list}",
+    "pridat": "+ Trénink s trenérem",
+    "pridatText": "Bez hodinek? Vyber den, kdy jste cvičili.",
+    "den": "Den tréninku",
+    "zapsat": "Zapsat",
+    "platbaText": "Platíš převodem na účet. Až zaplatíš, přepni na Zaplaceno, trenér to uvidí.",
+    "klientPotvrdil": "Zaplaceno, klient potvrdil",
+    "klientNezaplatil": "Zatím nezaplaceno"
   }
 }

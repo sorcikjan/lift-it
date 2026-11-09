@@ -162,7 +162,12 @@ function ClientOverview() {
             const notes = data.session_notes.filter((n) => n.session_id === s.id && !n.archived && n.text.trim());
             return (
               <li key={s.id} data-testid="coach-session" className="rounded-[18px] bg-grafit p-3">
-                <p className="text-[18px] font-semibold">{dayLabel(s.started_at)}{wo ? ` · ${t('summary.hotovy', { label: wo.label })}` : ''}</p>
+                <p className="text-[18px] font-semibold">{dayLabel(s.started_at)}{wo ? ` · ${t('summary.hotovy', { label: wo.label })}` : s.source === 'coach' ? ` · ${t('sTrenerem.nazev')}` : ''}</p>
+                {s.source === 'coach' && (
+                  <p data-testid="coach-paid" className={`text-[15px] font-semibold ${s.paid ? 'text-splneno-svetla' : 'text-zluta'}`}>
+                    {s.paid ? `✓ ${t('sTrenerem.klientPotvrdil')}` : t('sTrenerem.klientNezaplatil')}
+                  </p>
+                )}
                 {s.hr_avg != null && <p className="text-[15px] text-ocel">{t('summary.prumernyTep')} {s.hr_avg} · {t('summary.kcal')} {s.kcal ?? '–'}</p>}
                 <ul className="mt-2 flex flex-col gap-2">
                   {groups.map((g) => {

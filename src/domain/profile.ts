@@ -18,7 +18,7 @@ export interface ProfileSummary {
 }
 
 export function profileSummary(sessions: Session[], sets: LoggedSet[], now = new Date()): ProfileSummary {
-  const done = sessions.filter((s) => s.status === 'done' && !s.archived && s.source === 'app');
+  const done = sessions.filter((s) => s.status === 'done' && !s.archived && (s.source === 'app' || s.source === 'coach'));
   const ids = new Set(done.map((s) => s.id));
   const mon = mondayKey(now);
   const days = Array.from({ length: 7 }, (_, i) => { const d = new Date(mon); d.setDate(mon.getDate() + i); return key(d); });

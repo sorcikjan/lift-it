@@ -9,6 +9,7 @@ import { Check, Play, Plus } from '@/components/icons';
 import { SyncBadge } from '@/components/SyncBadge';
 import { Avatar, Brand, GoogleG } from '@/components/brand';
 import { ExerciseFigure } from '@/components/ExerciseFigure';
+import { CoachPrompt } from '@/components/CoachPrompt';
 import { activeRun, currentWeek, startWorkout, workoutView } from '@/client/repo';
 import { importSample } from '@/client/importer';
 import { onMe, type AuthMode, type Me } from '@/client/me';
@@ -62,6 +63,7 @@ export default function Home() {
         <TopBar me={me} />
         <h1 className="rise mt-6 font-display text-[44px] font-extrabold leading-none">{t('home.zadnyPlan')}</h1>
         <p className="rise mt-3 text-[19px] text-ocel" style={delay(1)}>{t('home.zadnyPlanText')}</p>
+        <CoachPrompt />
         <div className="mt-auto flex flex-col gap-3 pt-8">
           <LinkButton href="/import" big className="btn-glow shine"><Plus size={28} />{t('home.novyTyden')}</LinkButton>
           <Button variant="ghost" onClick={async () => { setBusy(true); await importSample(); setBusy(false); }} disabled={busy}>{t('home.ukazka')}</Button>
@@ -124,6 +126,8 @@ export default function Home() {
           <Button big onClick={start} disabled={busy} className="btn-glow shine press !h-[70px] !text-[28px]"><Play size={24} />{run ? t('home.pokracovat') : t('home.zacit')}</Button>
         </div>
       </article>
+
+      <CoachPrompt />
 
       <section aria-label={t('home.tentoTyden')} className="rise mt-4 flex items-center justify-between gap-3 rounded-[20px] border border-hrana bg-grafit px-4 py-3" style={delay(2)}>
         <div>

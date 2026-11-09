@@ -20,6 +20,8 @@ import { comments as loadComments, people, type CommentView } from '@/client/coa
 import { onMe, type Me } from '@/client/me';
 import { WatchPanel } from '@/components/WatchPanel';
 import { SyncBadge } from '@/components/SyncBadge';
+import { PaidToggle } from '@/components/PaidToggle';
+import type { Session } from '@/domain/types';
 import { t } from '@/i18n/t';
 
 export default function SummaryPage() {
@@ -63,6 +65,7 @@ function Summary() {
   if (data === undefined) return <Page><p className="pt-10 text-ocel">{t('common.nacitam')}</p></Page>;
   if (data === null) return <Page><p className="pt-10 text-ocel">{t('common.zadnaData')}</p><BottomNav /></Page>;
   const { session, sets, workout, planned, exs, records } = data;
+  if (session.source === 'coach') return <CoachSummary session={session} note={data.note} />;
   const sum = summarize(session, sets, planned);
   const groups: { exerciseId: string; sets: LoggedSet[] }[] = [];
   for (const s of sets) {
@@ -165,6 +168,34 @@ function Summary() {
       <div className="mt-5 flex flex-col gap-3">
         <ShareButton sessionId={session.id} label={workout?.label ?? ''} />
         <WritebackButton sessionId={session.id} />
+        <LinkButton href="/" big variant="done"><Check size={28} />{t('common.hotovo')}</LinkButton>
+        <DeleteSession id={session.id} />
+      </div>
+      <BottomNav />
+    </Page>
+  );
+}
+
+/** Trénink s trenérem: bez cviků a sérií, jen den, délka, tep z hodinek, zaplaceno a poznámka. */
+function CoachSummary({ session, note }: { session: Session; note: string }) {
+  const min = session.ended_at ? Math.round((new Date(session.ended_at).getTime() - new Date(session.started_at).getTime()) / 60000) : null;
+  return (
+    <Page>
+      <div className="min-h-8 pt-2"><SyncBadge /></div>
+      <header className="pb-4 pt-2">
+        <h1 className="rise font-display text-[52px] font-extrabold leading-[0.92]">{t('sTrenerem.nazev')}</h1>
+        <p className="mt-1 text-[17px] text-ocel">{dayLabel(session.started_at)}{min != null ? ` · ${min} ${t('common.min')}` : ''}</p>
+      </header>
+      <section className="rounded-[18px] border border-hrana bg-grafit p-4">
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-display text-[22px] font-bold">{t('sTrenerem.zaplaceno')}?</p>
+          <PaidToggle id={session.id} paid={!!session.paid} day={dayLabel(session.started_at)} className="min-h-12 px-4 text-[16px]" />
+        </div>
+        <p className="mt-1 text-[15px] text-ocel">{t('sTrenerem.platbaText')}</p>
+      </section>
+      {session.ended_at && <WatchPanel sessionId={session.id} />}
+      <NoteBox sessionId={session.id} initial={note} />
+      <div className="mt-5 flex flex-col gap-3">
         <LinkButton href="/" big variant="done"><Check size={28} />{t('common.hotovo')}</LinkButton>
         <DeleteSession id={session.id} />
       </div>

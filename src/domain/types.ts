@@ -60,9 +60,11 @@ export interface PlannedSet {
 export interface Session {
   id: string; user_id: string; workout_id: string | null;
   started_at: string; ended_at: string | null; with_coach: boolean; note: string | null;
-  status: 'active' | 'done' | 'abandoned'; actual_order: string[]; source: 'app' | 'baseline';
+  status: 'active' | 'done' | 'abandoned'; actual_order: string[]; source: 'app' | 'baseline' | 'coach';
   strava_activity_id: number | null; pairing_status: 'waiting' | 'paired' | 'not_found' | null;
   hr_avg: number | null; hr_max: number | null; kcal: number | null; garmin_activity_id: number | null;
+  /** Trénink s trenérem: zaplaceno? null = netýká se. */
+  paid?: boolean | null;
   archived: boolean; updated_at?: string;
 }
 export interface LoggedSet {

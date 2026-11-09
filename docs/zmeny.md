@@ -147,3 +147,15 @@ a test v posilovně na iPhonu.
 
 **Ověření**
 - Playwright: odcvičit trénink, smazat ho z profilu, zmizí ze seznamu, z týdne i ze souhrnu.
+
+## Trénink s trenérem a zaplaceno (9. 11. 2026)
+
+- **Domov:** když je ve Stravě silová aktivita bez tréninku v appce, karta „Byl to trénink s trenérem?“ s Ano, zapsat / Ne.
+- **Profil:** tréninky s trenérem v seznamu s přepínačem Zaplaceno, nahoře „Nezaplaceno: 2. 11., 8. 11.“, ruční zápis „+ Trénink s trenérem“.
+- **Shrnutí tréninku s trenérem:** den, délka, zaplaceno, tep a kalorie z hodinek, poznámka, smazat.
+- **Trenér:** u klienta vidí trénink s trenérem a potvrzení zaplacení.
+- Migrace `004_coach_sessions.sql`: `sessions.source` nově i `coach`, sloupec `paid` (rozhodnutí 42–43).
+
+**Ověření**
+- Vitest: aktivity bez tréninku (3), nezaplacené (1). Celkem 283.
+- Playwright: celá sada 22/22, nově nabídka ze Stravy → shrnutí → profil → ruční zápis → zaplaceno → potvrzení u trenéra.
