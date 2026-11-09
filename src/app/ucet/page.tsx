@@ -12,7 +12,7 @@ import { AccountExtras } from '@/components/AccountExtras';
 import { Avatar, GoogleG } from '@/components/brand';
 import { Back } from '@/components/icons';
 import { Button, Card, Page } from '@/components/ui';
-import { profileSummary } from '@/domain/profile';
+import { profileSummary, strengthTrend } from '@/domain/profile';
 import { doneSessions } from '@/client/repo';
 import { PaidToggle } from '@/components/PaidToggle';
 import { addCoachSession } from '@/client/strava';
@@ -23,6 +23,9 @@ import { t } from '@/i18n/t';
 const DNY = ['po', 'út', 'st', 'čt', 'pá', 'so', 'ne'];
 /** „od listopadu 2026“: měsíc ve 2. pádě */
 const MESICE = ['ledna', 'února', 'března', 'dubna', 'května', 'června', 'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'];
+/** „+6 %“, „−2 %“ */
+const pct = (x: number) => `${x >= 0 ? '+' : '−'}${Math.abs(Math.round(x * 100))} %`;
+const arrow = (x: number) => (x > 0.001 ? '↑ ' : x < -0.001 ? '↓ ' : '→ ');
 const delay = (i: number) => ({ '--i': i }) as React.CSSProperties;
 
 /** Profil a účet (F1, redesign 11/2026): kdo jsem, tento týden, souhrn; Strava, trenér, export. */
@@ -36,7 +39,10 @@ export default function AccountPage() {
     const next = new URLSearchParams(location.search).get('next');
     if (me && next && next.startsWith('/') && !next.startsWith('//') && next !== '/ucet') location.replace(next);
   }, [me]);
-  const p = useLiveQuery(async () => profileSummary(await db().sessions.toArray(), await db().logged_sets.toArray()), []);
+  const p = useLiveQuery(async () => {
+    const [sessions, sets] = await Promise.all([db().sessions.toArray(), db().logged_sets.toArray()]);
+    return { ...profileSummary(sessions, sets), trend: strengthTrend(sessions, sets) };
+  }, []);
   const history = useLiveQuery(doneSessions, []);
 
   const logout = async () => {
@@ -80,6 +86,18 @@ export default function AccountPage() {
               </div>
             ))}
           </div>
+          {p.trend && (
+            <Link href="/progres" data-testid="trend" className="rise mt-2 flex items-center justify-between gap-3 rounded-[20px] border border-hrana bg-grafit px-4 py-3.5" style={delay(2)}>
+              <span>
+                <small className="block text-[13px] font-bold uppercase tracking-[1.2px] text-modra-text">{t('profil.smer')}</small>
+                <b className={`block whitespace-nowrap font-display text-[24px] leading-tight ${p.trend.change > 0.001 ? 'text-splneno-svetla' : ''}`}>
+                  {arrow(p.trend.change)}{t('profil.smerHodnota', { change: pct(p.trend.change), date: shortDate(p.trend.since) })}
+                </b>
+                <small className="text-[14px] text-ocel">{t('profil.smerCviky', { up: p.trend.up, total: p.trend.total })}{p.trend.down ? t('profil.smerKlesa', { n: p.trend.down }) : ''}</small>
+              </span>
+              <span aria-label={t('profil.smerProgres')} className="text-[28px] text-ocel">›</span>
+            </Link>
+          )}
         </>
       )}
 

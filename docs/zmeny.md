@@ -159,3 +159,12 @@ a test v posilovně na iPhonu.
 **Ověření**
 - Vitest: aktivity bez tréninku (3), nezaplacené (1). Celkem 283.
 - Playwright: celá sada 22/22, nově nabídka ze Stravy → shrnutí → profil → ruční zápis → zaplaceno → potvrzení u trenéra.
+
+## Oproti minule a Kam jdeš (9. 11. 2026)
+
+- **Domov:** u cviků zelené „+2,5 kg“ / „+2 opak.“ proti minulému odcvičení, nahoře „Oproti minule přidáno u N z M cviků“.
+- **Profil:** karta „Kam jdeš: ↑ Síla +8 % od 26. 10. · Roste 2 z 2 cviků“ s odkazem do Progresu (rozhodnutí 44–45).
+
+**Ověření**
+- Vitest: rozdíl plánu proti minule (7), směr síly (2). Celkem 292.
+- Playwright: 22/22 (offline test napoprvé jednou neprošel, při opakování prošel); nově dvě historie → domov ukáže +2,5 kg, profil +8 %.

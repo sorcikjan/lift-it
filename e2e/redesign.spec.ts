@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { doExercise, freshUser, loadSample, shot } from './helpers';
+import { doExercise, freshUser, loadSample, shot, showAllExercises } from './helpers';
 
 test('Vstup: nepřihlášený bez dat vidí claim a Google, bez účtu pustí dál', async ({ page }) => {
   await freshUser(page);
@@ -54,4 +54,29 @@ test('Smazat trénink: zkušební trénink zmizí z profilu i z týdne', async (
   await page.goto('/');
   await expect(page.getByRole('button', { name: 'Začít trénink' })).toBeVisible();
   await expect(page.getByText(/^0 ze \d+ tréninků/)).toBeVisible();
+});
+
+test('Oproti minule: domov ukáže přidané kilo u cviků, profil směr síly', async ({ page }) => {
+  await freshUser(page);
+  for (const [date, rows] of [['2026-10-26', 'Tlak na prsa\t3x8\t30\nLeg press\t4x10\t35'], ['2026-11-02', 'Tlak na prsa\t3x8\t32,5\nLeg press\t4x10\t37,5']]) {
+    await page.goto('/import?historie=1');
+    await page.getByRole('textbox', { name: 'Vložit zkopírovanou tabulku' }).fill(rows);
+    await page.getByRole('button', { name: 'Zpracovat' }).click();
+    await page.getByLabel('Kdy se týden cvičil').fill(date);
+    await page.getByRole('button', { name: 'Uložit jako historii' }).click();
+    await expect(page.getByText('Hotovo')).toBeVisible();
+  }
+  await loadSample(page);
+  await expect(page.getByTestId('vs-last')).toHaveText(/Oproti minule přidáno u 2 z 2 cviků/);
+  await showAllExercises(page);
+  await expect(page.getByRole('listitem').filter({ hasText: 'Tlak na prsa' }).getByTestId('delta')).toHaveText('+2,5 kg');
+  await expect(page.getByRole('listitem').filter({ hasText: 'Leg press' }).getByTestId('delta')).toHaveText('+2,5 kg');
+  await shot(page, 5, '12-oproti-minule');
+  await page.goto('/ucet');
+  const trend = page.getByTestId('trend');
+  await expect(trend).toContainText('Síla +');
+  await expect(trend).toContainText('od 26. 10.');
+  await expect(trend).toContainText('Roste 2 z 2 cviků');
+  await page.waitForTimeout(1000);
+  await shot(page, 5, '13-smer');
 });

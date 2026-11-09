@@ -73,7 +73,10 @@
     "minut": "≈ {n} min",
     "dalsich": "+ {n} dalších",
     "vsechnyCviky": "Ukázat všechny cviky",
-    "mene": "Méně"
+    "mene": "Méně",
+    "oprotiMinule": "Oproti minule přidáno u {up} z {total} cviků",
+    "oprotiMinuleStejne": "Stejné jako minule",
+    "deltaAria": "Oproti minule {text}"
   },
   "run": {
     "hlavicka": "Trénink {label} · cvik {n} ze {total}",
@@ -525,7 +528,12 @@
     "hostText": "Tréninky jsou zatím jen v tomhle telefonu. Přihlas se, ať se neztratí.",
     "treninky": "Odcvičené tréninky",
     "treninkRadek": "Trénink {label}",
-    "bezPlanu": "Trénink"
+    "bezPlanu": "Trénink",
+    "smer": "Kam jdeš",
+    "smerHodnota": "Síla {change} od {date}",
+    "smerCviky": "Roste {up} z {total} cviků",
+    "smerKlesa": ", klesá {n}",
+    "smerProgres": "Progres po cvicích"
   },
   "sTrenerem": {
     "nabidkaNadpis": "Ve Stravě máš trénink bez záznamu",

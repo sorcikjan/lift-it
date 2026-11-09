@@ -10,7 +10,8 @@ import { SyncBadge } from '@/components/SyncBadge';
 import { Avatar, Brand, GoogleG } from '@/components/brand';
 import { ExerciseFigure } from '@/components/ExerciseFigure';
 import { CoachPrompt } from '@/components/CoachPrompt';
-import { activeRun, currentWeek, startWorkout, workoutView } from '@/client/repo';
+import { activeRun, currentWeek, lastTimesFor, startWorkout, workoutView } from '@/client/repo';
+import { planDelta, type PlanDelta } from '@/domain/workout/last';
 import { importSample } from '@/client/importer';
 import { onMe, type AuthMode, type Me } from '@/client/me';
 import { getMeta, setMeta } from '@/client/db';
@@ -38,11 +39,15 @@ export default function Home() {
     const [week, run] = await Promise.all([currentWeek(), activeRun()]);
     const wid = picked ?? run?.workout_id ?? week?.today?.id ?? week?.workouts[0]?.workout.id ?? null;
     const view = wid ? await workoutView(wid) : null;
-    return { week, run, view };
+    // Oproti minule: dnešní plán každého cviku proti tomu, co jsem minule odcvičil
+    const last = view ? await lastTimesFor(view.exercises.map((e) => e.exerciseId), null) : new Map();
+    const deltas = new Map<string, PlanDelta>();
+    for (const e of view?.exercises ?? []) { const d = planDelta(e.sets, last.get(e.exerciseId)); if (d) deltas.set(e.id, d); }
+    return { week, run, view, deltas };
   }, [picked]);
 
   if (!data || skip === null) return <Page><p className="pt-10 text-ocel">{t('common.nacitam')}</p></Page>;
-  const { week, run, view } = data;
+  const { week, run, view, deltas } = data;
 
   if (mode === 'supabase' && !me && !week && !skip) {
     return <Landing onSkip={async () => { await setMeta('skipLanding', true); setSkip(true); }} />;
@@ -77,6 +82,7 @@ export default function Home() {
   const est = Math.round(view.exercises.reduce((m, e) => m + e.sets.length * 2.2, 0) + view.exercises.length * 1.5);
   const shown = all ? view.exercises : view.exercises.slice(0, PEEK);
   const hero = view.exercises.find((e) => e.blok === 'hlavni') ?? view.exercises[0];
+  const ups = [...deltas.values()].filter((d) => d.dir === 'up').length;
   return (
     <Page>
       <TopBar me={me} />
@@ -96,6 +102,12 @@ export default function Home() {
             ))}
           </div>
 
+          {deltas.size > 0 && (
+            <p data-testid="vs-last" className={`mt-3 text-[15px] font-semibold ${ups ? 'text-splneno-svetla' : 'text-ocel'}`}>
+              {ups ? `↑ ${t('home.oprotiMinule', { up: ups, total: deltas.size })}` : t('home.oprotiMinuleStejne')}
+            </p>
+          )}
+
           <ol aria-label={t('home.seznamAria')} className="my-4 flex flex-col">
             {shown.map((e, i) => {
               const l = listLine(e);
@@ -104,7 +116,15 @@ export default function Home() {
               return (
                 <li key={e.id} className="flex items-center gap-3 border-b border-white/[.06] py-2.5">
                   <span className="w-6 font-display text-[17px] font-semibold text-ocel tabular">{no}</span>
-                  <Link href={`/knihovna/cvik?id=${encodeURIComponent(e.exerciseId)}`} className="min-w-0 flex-1 truncate text-[16px]">{e.name}</Link>
+                  <span className="min-w-0 flex-1">
+                    <Link href={`/knihovna/cvik?id=${encodeURIComponent(e.exerciseId)}`} className="block truncate text-[16px]">{e.name}</Link>
+                    {deltas.get(e.id)?.text && (
+                      <small data-testid="delta" aria-label={t('home.deltaAria', { text: deltas.get(e.id)!.text! })}
+                        className={`block text-[13px] font-semibold tabular ${deltas.get(e.id)!.dir === 'up' ? 'text-splneno-svetla' : 'text-ocel'}`}>
+                        {deltas.get(e.id)!.text}
+                      </small>
+                    )}
+                  </span>
                   <span className="font-display text-[17px] font-semibold text-ocel tabular">{l.sets}</span>
                   <span className="w-[76px] text-right font-display text-[17px] font-semibold text-ocel tabular">{l.weight}</span>
                 </li>
